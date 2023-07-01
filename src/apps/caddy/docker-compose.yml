@@ -3,8 +3,6 @@ services:
   app:
     image: caddy
     restart: unless-stopped
-    x-casaos:
-      envs: []
     ports:
       - target: 80
         published: 80
