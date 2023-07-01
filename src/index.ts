@@ -3,6 +3,7 @@ import Appdater from "./classes/appdater";
 import Utils from "./classes/utils";
 import path from 'path'
 import Log, { LogLevel } from "./classes/log";
+import fs from "fs";
 
 
 // create dist directory
@@ -11,6 +12,12 @@ Utils.createDir(path.join('dist', 'Apps'));
 
 // copy assets dir into the dist directory
 Utils.copyDir('src/assets', 'dist');
+
+
+let appsListMd = [
+    `| Application  | Version | Project Page |`,
+    `| --- | --- | --- |`
+];
 
 for (const app of new Apps()) {
 
@@ -32,6 +39,30 @@ for (const app of new Apps()) {
     // overwrite the docker-compose file inside the dist app directory
     app.compose().writeToFile(path.resolve(distAppPath, app.getComposeFilename()));
 
+
+    // app's project page url
+    let projectPage = app.compose()['x-casaos'].project_url;
+    if (projectPage === undefined) {
+        projectPage = `https://hub.docker.com/r/${app.image()}`;
+    }
+
+    // app's icon url
+    let icon = app.compose()['x-casaos'].icon;
+    if (icon === undefined || icon.trim().length === 0) {
+        icon = 'https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Coolstore@main/default-icon.svg';
+    }
+
+    // app's name
+    let title = app.compose()["x-casaos"].title.en_us;
+
+    appsListMd.push(`| <img src="${icon}" width="15"/>&nbsp;&nbsp;&nbsp;[${title}](https://github.com/WisdomSky/CasaOS-Coolstore/tree/main/Apps/${app.name()}) | ${app.tag()} | ${projectPage} |`);
+
 }
 
+// populate app's list in Readme.md
+let readme = fs.readFileSync('src/assets/README.md', 'utf8');
+
+readme = readme.replace('%APPSLIST%', appsListMd.join("\n"));
+
+fs.writeFileSync(path.join('dist', 'README.md'), readme);
 

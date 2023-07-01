@@ -2,7 +2,7 @@ declare namespace App {
     export type Config = {
         tag?: App.Tag,
         services?: {
-            [key:string]: {
+            [service:string]: {
                 tag?: App.Tag
             }
         }
@@ -23,9 +23,9 @@ declare namespace App {
 declare type Compose = {
     name: string;
     "x-casaos": Compose.XCasaOS;
-    services: { [key: string]: Compose.Service };
-    network: { [key: string]: any };
-    volumes: { [key: string]: any };
+    services: { [service: string]: Compose.Service };
+    network: { [network: string]: any };
+    volumes: { [volume: string]: any };
 }
 
 declare namespace Compose {
@@ -64,7 +64,9 @@ declare namespace Compose {
     export type XCasaOS = {
         architectures?: [];
         main: string;
-        title: Object;
+        title: {
+            [language: string]: string
+        };
         description: Object;
         tagline: Object;
         category: string;
