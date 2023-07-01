@@ -1,0 +1,2 @@
+# CasaOS-Cool-Appstore-Generator
+
