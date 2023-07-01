@@ -10,7 +10,7 @@ Utils.createDir('dist');
 Utils.createDir(path.join('dist', 'Apps'));
 
 // copy assets dir into the dist directory
-Utils.copyDir('src/assets', 'dist/assets');
+Utils.copyDir('src/assets', 'dist');
 
 for (const app of new Apps()) {
 
