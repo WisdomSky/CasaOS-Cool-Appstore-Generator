@@ -43,7 +43,11 @@ for (const app of new Apps()) {
     // app's project page url
     let projectPage = app.compose()['x-casaos'].project_url;
     if (projectPage === undefined) {
-        projectPage = `https://hub.docker.com/r/${app.image()}`;
+        if (app.image().indexOf('/') === -1) {
+            projectPage = `https://hub.docker.com/_/${app.image()}`;
+        } else {
+            projectPage = `https://hub.docker.com/r/${app.image()}`;
+        }
     }
 
     // app's icon url
