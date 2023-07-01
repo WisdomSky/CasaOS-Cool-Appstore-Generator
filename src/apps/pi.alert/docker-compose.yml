@@ -1,12 +1,15 @@
-name: pi.alert
+name: pi-alert
 services:
   app:
-    image: jokobsk/pi.alert:23
+    image: jokobsk/pi.alert
     restart: always
     network_mode: host
     environment:
       PUID: $PUID
       PGID: $PGID
+      HOST_USER_ID: $PUID
+      HOST_USER_GID: $PGID
+      TZ: $TZ
     x-casaos:
       envs:
         - container: PUID
@@ -18,11 +21,14 @@ services:
     ports:
       - target: 20211
         published: 20211
-        protocol: udp
+        protocol: tcp
     volumes:
       - type: bind
-        source: /DATA/AppData/Config/pi.alert
-        target: /config
+        source: /DATA/AppData/$AppID/config
+        target: /home/pi/pialert/config
+      - type: bind
+        source: /DATA/AppData/$AppID/db
+        target: /home/pi/pialert/db
 x-casaos:
   architectures:
     - amd64
@@ -40,3 +46,4 @@ x-casaos:
   title:
     en_us: Pi.alert
   category: Network Server
+  port_map: '20211'

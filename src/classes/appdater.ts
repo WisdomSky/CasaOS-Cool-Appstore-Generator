@@ -55,14 +55,15 @@ export default class Appdater {
     async updateTag(): Promise<void> {
 
         for (const service of this.app.compose().getServices()) {
+            this.log(`Service: ${service.getName()}`);
             let tag = undefined;
             const patternOrResolver = await this.getTagPatternOrResolver(service.getName());
             if (patternOrResolver instanceof RegExp) {
-                tag = await this.getFilteredTag((dockerTag) => {
+                tag = await this.getFilteredTag(service,(dockerTag) => {
                     return patternOrResolver.test(dockerTag.name);
                 })
             } else if (typeof patternOrResolver === 'function'){
-                tag = await this.getFilteredTag((dockerTag) => {
+                tag = await this.getFilteredTag(service,(dockerTag) => {
                     return patternOrResolver(dockerTag.name);
                 })
             } else {
@@ -73,13 +74,13 @@ export default class Appdater {
         }
     }
 
-    async getFilteredTag(validator: (dockerTag: DockerTag)=>boolean): Promise<string> {
+    async getFilteredTag(service: ComposeParser.Service,validator: (dockerTag: DockerTag)=>boolean): Promise<string> {
 
         let tag = undefined;
         let page = 0;
         try {
             do {
-                tag = await this.fetchTagFromDocker(this.app.image(), ++page, validator);
+                tag = await this.fetchTagFromDocker(service.getImage().getName(), ++page, validator);
             } while (tag === undefined);
         } catch(e) {
             this.log(e);

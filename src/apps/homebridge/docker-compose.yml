@@ -1,7 +1,7 @@
 name: homebridge
 services:
   app:
-    image: oznu/homebridge:2023-01-08
+    image: oznu/homebridge
     restart: unless-stopped
     environment:
       PGID: $PGID
@@ -28,7 +28,7 @@ services:
             en_us: ''
     volumes:
       - type: bind
-        source: /DATA/AppData/Config/homebridge
+        source: /DATA/AppData/$AppID/config/
         target: /homebridge
 x-casaos:
   architectures:

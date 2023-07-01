@@ -24,7 +24,7 @@ for (const app of new Apps()) {
     const updater = new Appdater(app);
 
     // verbose output
-    Log.setLogLevel(LogLevel.Silent);
+    Log.setLogLevel(LogLevel.Info);
 
     // execute tag updater
     await updater.updateTag();
