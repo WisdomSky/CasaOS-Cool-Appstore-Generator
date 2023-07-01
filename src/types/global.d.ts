@@ -69,7 +69,7 @@ declare namespace Compose {
         };
         description: Object;
         tagline: Object;
-        category: Coolstore
+        category: string;
         developer: string;
         author: string;
         icon?: string;
