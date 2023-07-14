@@ -6,10 +6,14 @@ import crypto from "crypto";
 import Utils from "./utils";
 import 'colors';
 import Log from "./log";
+import ContainerRepositoryHandler from "./handlers/_base";
+import DockerRepositoryHandler from "./handlers/docker";
 
 export default class Appdater {
 
-    private app: App;
+    public app: App;
+
+    private handlers: ContainerRepositoryHandler[] = [];
 
     private config: App.Config = null;
 
@@ -76,130 +80,29 @@ export default class Appdater {
 
     async getFilteredTag(service: ComposeParser.Service,validator: (dockerTag: DockerTag)=>boolean): Promise<string> {
 
-        let tag = undefined;
-        let page = 0;
-        try {
-            do {
-                tag = await this.fetchTagFromDocker(service.getImage().getName(), ++page, validator);
-            } while (tag === undefined);
-        } catch(e) {
-            this.log(e);
-        }
+        const image = service.getImage().getName();
 
-        return tag;
+        const handler = this.getHandler(image);
+
+        return handler.fetchTag(image,validator);
     }
 
-    async fetchTagFromDocker(image: string,page: number = 1, validator: (dockerTag: DockerTag) => boolean):  Promise<string|undefined>  {
 
-        if (page >= 10) throw 'Scanned 10 pages. Surrendering...';
+    getHandler(image: string): ContainerRepositoryHandler {
+        const dockerRepoHandler = new DockerRepositoryHandler();
+        dockerRepoHandler.setContext(this);
+        return [...this.handlers, dockerRepoHandler].filter(handler => handler.imageMatches(image))[0];
+    }
 
-        if (image.indexOf('/') === -1) {
-            image = `library/${image}`;
-        }
-
-        this.log(`Scanning https://registry.hub.docker.com/v2/repositories/${image}/tags/?page_size=100&page=${page}`)
-
-        let imagejson = undefined;
-
-        do {
-            imagejson = await this.fetchJson(`https://registry.hub.docker.com/v2/repositories/${image}/tags/?page_size=100&page=${page}`)
-        } while (imagejson.message !== 'httperror 404: object not found' && imagejson.results === undefined);
-
-        if (imagejson.results === undefined) {
-            throw 'Unable to resolve image version';
-        }
-
-        const results: DockerTag[] = imagejson.results;
-        for (let row of results) {
-            let valid = validator(row);
-            if (valid) {
-                this.log(`Tag matched: ${row.name}`);
-                return row.name;
-            }
-        }
-        return undefined;
+    addContainerRepositoryHandler(handler: ContainerRepositoryHandler): Appdater {
+        handler.setContext(this);
+        this.handlers.push(handler);
+        return this;
     }
 
 
 
-    private async fetchJson(jsonURL, opts: FetchOptions = {}): Promise<Object> {
-        
-        let cache = this.getCache(jsonURL, opts.longlivedcache);
-
-        if (cache !== null) {
-            this.log('Cache found! Using cached results in .cache directory.')
-            return await cache.json();
-        }
-        let res: any = await this.dfetch(jsonURL, opts);
-        const code = res.status;
-        res = await (res).json();
-
-        if (code === 200) {
-            this.cacheContent(jsonURL, JSON.stringify(res), opts.longlivedcache);
-        }
-
-        return res;
-    }
-
-    private async dfetch(url, opts) {
-        const controller = new AbortController();
-
-        const id = setTimeout(() => controller.abort(), 10000);
-
-        const response = await fetch(url, {...opts, signal: controller.signal});
-
-        clearTimeout(id);
-
-        return response;
-    }
-
-
-    private cacheContent(url: string, content: string, longlivedCache: boolean = false): void {
-        Utils.createDir(
-            path.resolve('.cache'),
-            path.resolve('.cache', 'longlived'),
-            path.resolve('.cache', this.getCurrentDate()),
-        );
-        const p = path.resolve('.cache', longlivedCache === true ?  'longlived' : this.getCurrentDate(), this.hash(url));
-
-        try {
-            fs.writeFileSync(p, content);
-        } catch(e) {
-            this.log(e);
-        }
-    }
-
-    private getCache(url:string, longlivedCache:boolean = false): Response|null {
-        const p = path.resolve('.cache', longlivedCache === true ?  'longlived' : this.getCurrentDate(), this.hash(url));
-
-        if (fs.existsSync(p)) {
-            return new Response(fs.readFileSync(p, 'utf8'), { status: 200, statusText: 'OK'});
-        }
-        return null;
-    }
-
-    private isCache(url:string, longlivedCache:boolean = false): boolean {
-        const p = path.resolve('.cache', longlivedCache === true ?  'longlived' : this.getCurrentDate(), this.hash(url));
-        return fs.existsSync(p);
-    }
-
-    private getCurrentDate(): string {
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-        const day = String(currentDate.getDate()).padStart(2, '0');
-
-        return year + '-' + month + '-' + day;
-    }
-
-    private hash(str: string): string {
-        const hash = crypto.createHash('sha256');
-        hash.update(str);
-        return hash.digest('hex');
-    }
-
-
-    private log(message: string): void {
+    log(message: string): void {
         Log.info(`${this.app.name()}: `.yellow, message);
     }
 

@@ -4,6 +4,7 @@ import Utils from "./classes/utils";
 import path from 'path'
 import Log, { LogLevel } from "./classes/log";
 import fs from "fs";
+import GithubRepositoryHandler from "./classes/handlers/github";
 
 
 // create dist directory
