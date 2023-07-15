@@ -65,10 +65,14 @@ declare namespace Compose {
         architectures?: [];
         main: string;
         title: {
-            [language: string]: string
+            [language_code: string]: string
         };
-        description: Object;
-        tagline: Object;
+        description:  {
+            [language_code:string]: string
+        };
+        tagline: {
+            [language_code:string]: string
+        };
         category: string;
         developer: string;
         author: string;
@@ -122,21 +126,4 @@ declare type FetchOptions = {
     longlivedcache?: boolean,
 
     [key:string]: any;
-}
-
-
-declare type DockerTag = {
-    name: string;
-    digest: string;
-    last_updated: string;
-    images: DockerImage[];
-
-}
-
-declare type DockerImage = {
-    architecture: string;
-    digest: string;
-    last_pulled: string;
-    last_pushed: string;
-    status: string;
 }

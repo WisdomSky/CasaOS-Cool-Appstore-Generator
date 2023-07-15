@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import Apps from "./classes/apps";
 import Appdater from "./classes/appdater";
 import Utils from "./classes/utils";
@@ -16,13 +17,15 @@ Utils.copyDir('src/assets', 'dist');
 
 
 let appsListMd = [
-    `| Application  | Version | Project Page |`,
+    `| Application  | Version | Description |`,
     `| --- | --- | --- |`
 ];
 
 for (const app of new Apps()) {
 
     const updater = new Appdater(app);
+
+    updater.addContainerRepositoryHandler(new GithubRepositoryHandler());
 
     // verbose output
     Log.setLogLevel(LogLevel.Info);
@@ -42,14 +45,14 @@ for (const app of new Apps()) {
 
 
     // app's project page url
-    let projectPage = app.compose()['x-casaos'].project_url;
-    if (projectPage === undefined) {
-        if (app.image().indexOf('/') === -1) {
-            projectPage = `https://hub.docker.com/_/${app.image()}`;
-        } else {
-            projectPage = `https://hub.docker.com/r/${app.image()}`;
-        }
-    }
+    // let projectPage = app.compose()['x-casaos'].project_url;
+    // if (projectPage === undefined) {
+    //     if (app.image().indexOf('/') === -1) {
+    //         projectPage = `https://hub.docker.com/_/${app.image()}`;
+    //     } else {
+    //         projectPage = `https://hub.docker.com/r/${app.image()}`;
+    //     }
+    // }
 
     // app's icon url
     let icon = app.compose()['x-casaos'].icon;
@@ -59,8 +62,9 @@ for (const app of new Apps()) {
 
     // app's name
     let title = app.compose()["x-casaos"].title.en_us;
+    let tagline = app.compose()["x-casaos"].tagline.en_us.replace(/(\r\n|\n|\r)/gm, '');
 
-    appsListMd.push(`| <img src="${icon}" width="15"/>&nbsp;&nbsp;&nbsp;[${title}](https://github.com/WisdomSky/CasaOS-Coolstore/tree/main/Apps/${app.name()}) | ${app.tag()} | ${projectPage} |`);
+    appsListMd.push(`| <img src="${icon}" width="15"/>&nbsp;&nbsp;&nbsp;[${title}](https://github.com/WisdomSky/CasaOS-Coolstore/tree/main/Apps/${app.name()}) | ${app.tag()} | ${tagline} |`);
 
 }
 

@@ -59,16 +59,20 @@ export default class Appdater {
     async updateTag(): Promise<void> {
 
         for (const service of this.app.compose().getServices()) {
-            this.log(`Service: ${service.getName()}`);
+            this.log(`Image = ${service.getImage().getName()} (${service.getName()})`);
             let tag = undefined;
+
+            if (service.getImage().getName().indexOf(":") !== -1 && service.getImage().getTag().trim().length) continue;
+            if (service.getImage().getName().indexOf("@") !== -1 && service.getImage().getDigest().trim().length) continue;
+
             const patternOrResolver = await this.getTagPatternOrResolver(service.getName());
             if (patternOrResolver instanceof RegExp) {
-                tag = await this.getFilteredTag(service,(dockerTag) => {
-                    return patternOrResolver.test(dockerTag.name);
+                tag = await this.getFilteredTag(service,(tag) => {
+                    return patternOrResolver.test(tag);
                 })
             } else if (typeof patternOrResolver === 'function'){
-                tag = await this.getFilteredTag(service,(dockerTag) => {
-                    return patternOrResolver(dockerTag.name);
+                tag = await this.getFilteredTag(service,(tag) => {
+                    return patternOrResolver(tag);
                 })
             } else {
                 tag = 'latest';
@@ -78,7 +82,7 @@ export default class Appdater {
         }
     }
 
-    async getFilteredTag(service: ComposeParser.Service,validator: (dockerTag: DockerTag)=>boolean): Promise<string> {
+    async getFilteredTag(service: ComposeParser.Service,validator: (tag: string)=>boolean): Promise<string> {
 
         const image = service.getImage().getName();
 
@@ -102,7 +106,7 @@ export default class Appdater {
 
 
 
-    log(message: string): void {
+    log(message: any): void {
         Log.info(`${this.app.name()}: `.yellow, message);
     }
 

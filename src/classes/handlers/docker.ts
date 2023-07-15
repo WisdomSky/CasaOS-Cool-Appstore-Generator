@@ -1,5 +1,26 @@
 import ContainerRepositoryHandler from "./_base";
 
+type DockerTag = {
+    name: string;
+    digest: string;
+    last_updated: string;
+    images: DockerImage[];
+
+}
+
+type DockerImage = {
+    architecture: string;
+    digest: string;
+    last_pulled: string;
+    last_pushed: string;
+    status: string;
+}
+
+
+type DockerResult = {
+    message?: string;
+    results: DockerTag[];
+}
 
 export default class DockerRepositoryHandler extends ContainerRepositoryHandler {
 
@@ -7,7 +28,7 @@ export default class DockerRepositoryHandler extends ContainerRepositoryHandler 
         return /^(?:docker\.io\/)?(?:(?:[\w-.]+\/)?[\w-.]+)$/.test(image);
     }
 
-    async fetchTag(image: string, validator: (dockerTag: DockerTag) => boolean): Promise<string>  {
+    async fetchTag(image: string, validator: (tag: string) => boolean): Promise<string>  {
 
         let page = 1;
         try {
@@ -21,11 +42,11 @@ export default class DockerRepositoryHandler extends ContainerRepositoryHandler 
 
                 this.context.log(`Scanning https://registry.hub.docker.com/v2/repositories/${image}/tags/?page_size=100&page=${page}`)
 
-                let imagejson = undefined;
+                let imagejson = await this.fetchJson<DockerResult>(`https://registry.hub.docker.com/v2/repositories/${image}/tags/?page_size=100&page=${page++}`);
 
-                do {
-                    imagejson = await this.fetchJson(`https://registry.hub.docker.com/v2/repositories/${image}/tags/?page_size=100&page=${page++}`)
-                } while (imagejson.message !== 'httperror 404: object not found' && imagejson.results === undefined);
+                if (imagejson.message === 'httperror 404: object not found') {
+                    throw 'Unable to resolve image version';
+                }
 
                 if (imagejson.results === undefined) {
                     throw 'Unable to resolve image version';
@@ -33,9 +54,9 @@ export default class DockerRepositoryHandler extends ContainerRepositoryHandler 
 
                 const results: DockerTag[] = imagejson.results;
                 for (let row of results) {
-                    let valid = validator(row);
+                    let valid = validator(row.name);
                     if (valid) {
-                        this.context.log(`Tag matched: ${row.name}`);
+                        this.context.log(`Tag = ${row.name}`);
                         return row.name;
                     }
                 }

@@ -17,13 +17,13 @@ export default abstract class ContainerRepositoryHandler {
         return this;
     }
 
-    protected async fetchJson(jsonURL, opts: FetchOptions = {}): Promise<Object> {
+    protected async fetchJson<T>(jsonURL, opts: FetchOptions = {}): Promise<T> {
 
         let cache = this.getCache(jsonURL, opts.longlivedcache);
 
         if (cache !== null) {
             this.context.log('Cache found! Using cached results in .cache directory.')
-            return await cache.json();
+            return await cache.json() as T;
         }
         let res: any = await this.dfetch(jsonURL, opts);
         const code = res.status;

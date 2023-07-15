@@ -8,12 +8,19 @@
   },
   "repository": "https://github.com/WisdomSky/CasaOS-Cool-Appstore-Generator.git",
   "homepage": "https://github.com/WisdomSky/CasaOS-Cool-Appstore-Generator",
-  "keywords": ["docker","docker-compose", "casaos","casaos-appstore","appstore"],
+  "keywords": [
+    "docker",
+    "docker-compose",
+    "casaos",
+    "casaos-appstore",
+    "appstore"
+  ],
   "author": "Julian Paolo Dayag <WisdomSky>",
   "license": "ISC",
   "dependencies": {
     "colors": "^1.4.0",
     "docker-compose-parser": "^0.0.3",
+    "dotenv": "^16.3.1",
     "node-fetch": "^3.3.1",
     "typescript": "^5.1.6"
   },
