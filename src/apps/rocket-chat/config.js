@@ -3,7 +3,7 @@ export default {
         pattern: /^\d+\.\d+(\.\d+)?$/
     },
     services: {
-        database: {
+        db: {
             tag: {
                 pattern: /^\d+(\.\d+(\.\d+)?)?$/
             }
