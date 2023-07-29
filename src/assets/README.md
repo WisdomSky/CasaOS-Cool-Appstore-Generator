@@ -8,7 +8,7 @@ Just a cool appstore. ⛄
 ---
 
 #### ☕ Treat WisdomSky a cup of coffee...
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?business=i.wisdomsky%40gmail.com&cmd=_donations&currency_code=USD&item_name=Julian+Paolo+Dayag&lc=US&return=https://github.com/WisdomSky/CasaOS-Coolstore)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RYAFEWHVZCZ62)
 
 ---
 
