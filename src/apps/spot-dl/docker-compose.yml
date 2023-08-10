@@ -9,7 +9,7 @@ services:
         protocol: tcp
     volumes:
       - type: bind
-        source: /DATA/AppData/spot-dl/music
+        source: /DATA/Media/Music
         target: /music
     command: ['web','--host','0.0.0.0','--port','8808','--web-use-output-dir']
     tty: true
