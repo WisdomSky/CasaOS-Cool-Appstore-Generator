@@ -6,6 +6,7 @@ services:
     volumes:
       - /DATA/AppData/immich/upload:/usr/src/app/upload
     environment:
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
       - DB_HOSTNAME=immich_postgres
       - DB_USERNAME=casaos
       - DB_PASSWORD=casaos
@@ -19,13 +20,13 @@ services:
       - typesense
       - immich-machine-learning
     restart: always
-
   immich-microservices:
     image: ghcr.io/immich-app/immich-server
     command: [ "start.sh", "microservices" ]
     volumes:
       - /DATA/AppData/immich/upload:/usr/src/app/upload
     environment:
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
       - DB_HOSTNAME=immich_postgres
       - DB_USERNAME=casaos
       - DB_PASSWORD=casaos
@@ -37,7 +38,6 @@ services:
       - database
       - typesense
     restart: always
-
   immich-machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning
     volumes:
@@ -50,28 +50,26 @@ services:
       - DB_PORT=5432
       - REDIS_HOSTNAME=immich_redis
     restart: always
-
   immich-web:
     image: ghcr.io/immich-app/immich-web
     restart: always
-
   typesense:
     image: typesense/typesense
     environment:
-      - TYPESENSE_API_KEY=
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
       - TYPESENSE_DATA_DIR=/data
     logging:
       driver: none
     volumes:
       - /DATA/AppData/immich/typesense/data:/data
     restart: always
-
   redis:
     image: redis
     restart: always
-
+    hostname: immich_redis
   database:
     image: postgres
+    hostname: immich_postgres
     environment:
       POSTGRES_PASSWORD: casaos
       POSTGRES_USER: casaos
@@ -80,7 +78,6 @@ services:
     volumes:
       - /DATA/AppData/immich/postgresql/data:/var/lib/postgresql/data
     restart: always
-
   immich-proxy:
     image: ghcr.io/immich-app/immich-proxy
     environment:
@@ -94,7 +91,6 @@ services:
       - immich-web
       - immich-machine-learning
     restart: always
-
 x-casaos:
   architectures:
     - amd64
@@ -105,14 +101,22 @@ x-casaos:
     en_us: Self-hosted photos and videos backup tool
   tagline:
     en_us: Self-hosted photos and videos backup tool
-  developer: 'Immich'
+  developer: Immich
   author: WisdomSky
   icon: https://immich.app/img/logo.png
   thumbnail: https://immich.app/img/logo.png
   title:
     en_us: Immich
   category: Coolstore
+  tips:
+    before_install:
+      en_us: |
+        In order for Immich to work correctly, you need to specify the `TYPESENSE_API_KEY` before installing by running this command:
+        
+        ```
+        casaos-cli app-management set global TYPESENSE_API_KEY <your-typesense-api-key>
+        ```
+        
+        Failure to run this command will result Immich to unable to start.
+
   port_map: '2283'
-
-
-
