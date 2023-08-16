@@ -1,4 +1,4 @@
-name: casaos-cloudflared
+name: cloudflared-web
 services:
   cloudflared:
     image: wisdomsky/cloudflared-web
@@ -41,7 +41,6 @@ services:
       - type: bind
         source: /DATA/AppData/casaos-cloudflared/config
         target: /config
-    container_name: cloudflared
 x-casaos:
   architectures:
     - amd64
@@ -83,5 +82,5 @@ x-casaos:
   thumbnail: https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Coolstore@main/Apps/casaos-cloudflared/icon.png
   category: Coolstore
   title:
-    en_us: Cloudflared
+    en_us: Cloudflared-web
   port_map: '14333'
