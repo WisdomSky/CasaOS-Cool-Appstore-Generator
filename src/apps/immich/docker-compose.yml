@@ -6,7 +6,6 @@ services:
     volumes:
       - /DATA/AppData/immich/upload:/usr/src/app/upload
     environment:
-      TYPESENSE_API_KEY: $TYPESENSE_API_KEY
       DB_HOSTNAME: immich_postgres
       DB_USERNAME: casaos
       DB_PASSWORD: casaos
@@ -26,7 +25,6 @@ services:
     volumes:
       - /DATA/AppData/immich/upload:/usr/src/app/upload
     environment:
-      TYPESENSE_API_KEY: $TYPESENSE_API_KEY
       DB_HOSTNAME: immich_postgres
       DB_USERNAME: casaos
       DB_PASSWORD: casaos
@@ -56,7 +54,6 @@ services:
   typesense:
     image: typesense/typesense
     environment:
-      TYPESENSE_API_KEY: $TYPESENSE_API_KEY
       TYPESENSE_DATA_DIR: /data
     logging:
       driver: none
