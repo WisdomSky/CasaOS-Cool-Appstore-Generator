@@ -77,7 +77,9 @@ export default class Appdater {
             } else {
                 tag = 'latest';
             }
-            service.getImage().setTag(tag);
+            if (tag) {
+                service.getImage().setTag(tag);
+            }
 
         }
     }
