@@ -20,13 +20,13 @@ export default class GithubRepositoryHandler extends ContainerRepositoryHandler 
         try {
             do {
 
-                if (page >= 10) throw 'Scanned 10 pages. Surrendering...';
+                if (page >= 100) throw 'Scanned 100 pages. Surrendering...';
 
                 const imageinfo = image.replace(/^(?:ghcr\.io\/)?([^\/]+?\/[^\/\:]+?)(?:\:[^\/\:]+)?$/,'$1').split('/');
 
-                this.context.log(`https://api.github.com/users/${imageinfo[0]}/packages/container/${imageinfo[1]}/versions?page=${page++}`)
+                this.context.log(`https://api.github.com/users/${imageinfo[0]}/packages/container/${imageinfo[1]}/versions?page=${page}`)
 
-                let results: GithubTag[] = await this.fetchJson<GithubTag[]>(`https://api.github.com/users/${imageinfo[0]}/packages/container/${imageinfo[1]}/versions?page=${page++}`,{
+                let results: GithubTag[] = await this.fetchJson<GithubTag[]>(`https://api.github.com/users/${imageinfo[0]}/packages/container/${imageinfo[1]}/versions?page=${page}`,{
                     headers: {
                         Authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN}`
                     }
@@ -51,6 +51,7 @@ export default class GithubRepositoryHandler extends ContainerRepositoryHandler 
                 } catch (e) {
                     this.context.log(results);
                 }
+                page++
             } while (true);
         } catch(e) {
             this.context.log(e);
