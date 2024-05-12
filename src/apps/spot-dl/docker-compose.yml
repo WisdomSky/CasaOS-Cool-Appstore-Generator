@@ -4,8 +4,8 @@ services:
     image: spotdl/spotify-downloader:v4.2.0
     restart: unless-stopped
     ports:
-      - target: 8808
-        published: 8808
+      - target: 8800
+        published: 8800
         protocol: tcp
     volumes:
       - type: bind
@@ -14,7 +14,7 @@ services:
       - type: bind
         source: /DATA/AppData/coolstore-spotdl/config
         target: /config
-    command: ['web','--host','0.0.0.0','--port','8808','--web-use-output-dir']
+    command: ['web','--host','0.0.0.0','--port','8800','--web-use-output-dir']
     tty: true
 x-casaos:
   architectures:
@@ -36,4 +36,4 @@ x-casaos:
       en_us: |
         The default download location is set to `/DATA/Media/Music`. You can change this by going into the app settings and changing the specified path.
   category: Coolstore
-  port_map: '8808'
+  port_map: '8800'
