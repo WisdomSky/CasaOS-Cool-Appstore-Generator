@@ -2,7 +2,7 @@ declare namespace App {
     export type Config = {
         tag?: App.Tag,
         services?: {
-            [service:string]: {
+            [service: string]: {
                 tag?: App.Tag
             }
         }
@@ -18,112 +18,63 @@ declare namespace App {
         export type Resolver = (tag: string) => boolean;
     }
 
-}
-
-declare type Compose = {
-    name: string;
-    "x-casaos": Compose.XCasaOS;
-    services: { [service: string]: Compose.Service };
-    network: { [network: string]: any };
-    volumes: { [volume: string]: any };
-}
-
-declare namespace Compose {
-
-    export type Service = {
-        image: string;
-        envs?: {};
-        ports?: Compose.Service.Port[];
-        volumes?: Compose.Service.Volume[];
-        restart: string;
-        "x-casaos"?: {
-            envs?: [];
-            ports?: [];
-            [key:string]: any;
-        };
-
-        [key:string]: any;
-    }
-
-    export namespace Service {
-
-        export type Port = {
-            published: string|number;
-            target: string|number;
-            protocol: string;
-        }
-
-        export type Volume = {
-            type: string;
-            source: string;
-            target: string;
-        }
-    }
-
-
-    export type XCasaOS = {
-        architectures?: [];
-        main: string;
-        title: {
-            [language_code: string]: string
-        };
-        description:  {
-            [language_code:string]: string
-        };
-        tagline: {
-            [language_code:string]: string
-        };
-        category: string;
-        developer: string;
-        author: string;
-        icon?: string;
-        thumbnail?: string;
-        port_map: string;
-
-        [key:string]: any;
-    }
-}
-
-
-declare type ComposeParser = Compose & {
-    getService(service: string): ComposeParser.Service;
-    getServices(): ComposeParser.Service[];
-    json(): JSON;
-    text(): string;
-    toJSON(): JSON;
-    writeToFile(path: string): void;
-}
-
-declare namespace ComposeParser {
-
-    export type Service = {
-        getImage(): ComposeParser.Image;
-        getName(): string;
-        setImage(image: string): ComposeParser.Service
-        getRestartPolicy(): string;
-        setRestartPolicy(policy: string): ComposeParser.Service;
-        getEnvironment(): string;
-        toJSON(): JSON;
+    export type LocalizedText = {
+        [locale: string]: string;
     };
 
-    export type Image = {
-        getImage(): string;
-        setImage(image: string): ComposeParser.Image;
-        getName(): string;
-        setName(name: string): ComposeParser.Image;
-        getTag(): string;
-        setTag(tag: string): ComposeParser.Image;
-        getDigest(): string;
-        setDigest(digest: string): ComposeParser.Image;
-        get(): string;
-        toJSON(): string;
-    }
+    export type ComposeService = {
+        image: string;
+        labels?: { [key: string]: any } | null;
+        "x-casaos"?: { [key: string]: any } | null;
+        [key: string]: any;
+    };
 
+    export type XCasaOS = {
+        id?: string;
+        main?: string;
+        index?: string;
+        port_map?: string;
+        scheme?: string;
+        icon?: string;
+        title?: App.LocalizedText;
+        tagline?: App.LocalizedText;
+        description?: App.LocalizedText;
+        thumbnail?: string;
+        screenshot_link?: string[];
+        tips?: { [key: string]: App.LocalizedText };
+        author?: string;
+        developer?: string;
+        category?: string;
+        architectures?: string[];
+        version?: string;
+        update_at?: string;
+        release_notes?: App.LocalizedText;
+        website?: string;
+        repo?: string;
+        support?: string;
+        docs?: string;
+        [key: string]: any;
+    };
+
+    export type Compose = {
+        name?: string;
+        services: { [service: string]: App.ComposeService };
+        "x-casaos"?: App.XCasaOS;
+        [key: string]: any;
+    };
+
+    export type ParsedImage = {
+        reference: string;
+        name: string;
+        registry: string;
+        repository: string;
+        tag: string;
+        digest: string;
+    };
 }
-
 
 declare type FetchOptions = {
     longlivedcache?: boolean,
 
-    [key:string]: any;
+    [key: string]: any;
 }

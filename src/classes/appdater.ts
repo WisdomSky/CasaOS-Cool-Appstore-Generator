@@ -1,13 +1,8 @@
 import App from "./app";
-import path from "path";
-import fs from "fs";
-import fetch, {Response} from "node-fetch";
-import crypto from "crypto";
-import Utils from "./utils";
-import 'colors';
 import Log from "./log";
 import ContainerRepositoryHandler from "./handlers/_base";
 import DockerRepositoryHandler from "./handlers/docker";
+import GithubRepositoryHandler from "./handlers/github";
 
 export default class Appdater {
 
@@ -16,7 +11,6 @@ export default class Appdater {
     private handlers: ContainerRepositoryHandler[] = [];
 
     private config: App.Config = null;
-
 
     constructor(app: App) {
         this.app = app;
@@ -43,61 +37,76 @@ export default class Appdater {
         return this;
     }
 
-    private async getTagPatternOrResolver(serviceName: string): Promise<App.Tag.Pattern|App.Tag.Resolver> {
+    private async getTagPatternOrResolver(serviceName: string): Promise<App.Tag.Pattern | App.Tag.Resolver | undefined> {
         const c = await this.getConfig();
-        if (c.services !== undefined &&
-            c.services[serviceName] !== undefined &&
-            c.services[serviceName].tag !== undefined
-        ) {
-            let pattern = c.services[serviceName].tag.pattern;
+        if (c === null) return undefined;
+
+        const serviceConfig = c.services?.[serviceName];
+        if (serviceConfig?.tag !== undefined) {
+            let pattern = serviceConfig.tag.pattern;
             if (pattern !== undefined) return pattern;
-            return c.services[serviceName].tag.resolver;
+            return serviceConfig.tag.resolver;
         }
+
+        if (c.tag === undefined) return undefined;
+
         return c.tag.pattern !== undefined ? c.tag.pattern : c.tag.resolver;
     }
 
-    async updateTag(): Promise<void> {
+    /**
+     * Resolve and apply image tags for every service in the app.
+     *
+     * Images pinned by digest are left untouched. Tagged images are updated when
+     * the app config provides a tag pattern/resolver; otherwise `latest` is used.
+     */
+    async updateTags(): Promise<void> {
+        for (const [serviceName, service] of Object.entries(this.app.services())) {
+            const parsed = App.parseImage(String(service.image || ''));
+            this.log(`Image = ${parsed.name}:${parsed.tag || 'latest'} (${serviceName})`);
 
-        for (const service of this.app.compose().getServices()) {
-            this.log(`Image = ${service.getImage().getName()} (${service.getName()})`);
-            let tag = undefined;
+            if (parsed.digest.trim().length) {
+                this.log('Image is digest-pinned. Skipping.');
+                continue;
+            }
 
-            if (service.getImage().getName().indexOf(":") !== -1 && service.getImage().getTag().trim().length) continue;
-            if (service.getImage().getName().indexOf("@") !== -1 && service.getImage().getDigest().trim().length) continue;
+            const patternOrResolver = await this.getTagPatternOrResolver(serviceName);
+            let tag: string | undefined;
 
-            const patternOrResolver = await this.getTagPatternOrResolver(service.getName());
             if (patternOrResolver instanceof RegExp) {
-                tag = await this.getFilteredTag(service,(tag) => {
-                    return patternOrResolver.test(tag);
-                })
-            } else if (typeof patternOrResolver === 'function'){
-                tag = await this.getFilteredTag(service,(tag) => {
-                    return patternOrResolver(tag);
-                })
+                tag = await this.getFilteredTag(parsed.name, (candidate) => {
+                    return (patternOrResolver as RegExp).test(candidate);
+                });
+            } else if (typeof patternOrResolver === 'function') {
+                tag = await this.getFilteredTag(parsed.name, (candidate) => {
+                    return patternOrResolver(candidate);
+                });
             } else {
                 tag = 'latest';
             }
-            if (tag) {
-                service.getImage().setTag(tag);
-            }
 
+            if (tag) {
+                this.app.setServiceImageTag(serviceName, tag);
+                this.log(`Tag = ${tag}`);
+            } else {
+                this.log(`Unable to resolve a matching tag for ${parsed.name}. Keeping the current reference.`);
+            }
         }
     }
 
-    async getFilteredTag(service: ComposeParser.Service,validator: (tag: string)=>boolean): Promise<string> {
-
-        const image = service.getImage().getName();
-
+    async getFilteredTag(image: string, validator: (tag: string) => boolean): Promise<string | undefined> {
         const handler = this.getHandler(image);
+        if (handler === undefined) {
+            this.log(`No repository handler found for image ${image}.`);
+            return undefined;
+        }
 
-        return handler.fetchTag(image,validator);
+        return handler.fetchTag(image, validator);
     }
 
-
-    getHandler(image: string): ContainerRepositoryHandler {
+    getHandler(image: string): ContainerRepositoryHandler | undefined {
         const dockerRepoHandler = new DockerRepositoryHandler();
         dockerRepoHandler.setContext(this);
-        return [...this.handlers, dockerRepoHandler].filter(handler => handler.imageMatches(image))[0];
+        return [...this.handlers, dockerRepoHandler].find(handler => handler.imageMatches(image));
     }
 
     addContainerRepositoryHandler(handler: ContainerRepositoryHandler): Appdater {
@@ -106,10 +115,7 @@ export default class Appdater {
         return this;
     }
 
-
-
     log(message: any): void {
-        Log.info(`${this.app.name()}: `.yellow, message);
+        Log.info(`${this.app.name()}: `, message);
     }
-
 }

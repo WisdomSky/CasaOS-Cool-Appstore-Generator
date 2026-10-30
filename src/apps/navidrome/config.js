@@ -1,5 +1,5 @@
 export default {
     tag: {
-        pattern: /^sha-.*$/
+        pattern: /^\d+(\.\d+(\.\d+)?)?$/
     }
 }

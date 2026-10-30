@@ -1,0 +1,46 @@
+name: Validate AppStore v2
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'store-config.json'
+      - 'supported-languages.json'
+      - 'package.json'
+      - '.github/workflows/validate-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Validate AppStore v2 metadata
+        run: npm run validate
+
+      - name: Validate compose syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(src/apps/*/docker-compose.y*ml)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No compose files found under src/apps" >&2
+            exit 1
+          fi
+          for file in "${files[@]}"; do
+            echo "Validating ${file}"
+            docker compose -f "${file}" config -q
+          done

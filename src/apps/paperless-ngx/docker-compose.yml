@@ -9,7 +9,7 @@ services:
     ports:
       - "8005:8000"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8000" ]
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -47,9 +47,9 @@ services:
       MARIADB_PASSWORD: paperless
       MARIADB_ROOT_PASSWORD: paperless
   tika:
-    image: ghcr.io/paperless-ngx/tika:latest
+    image: apache/tika:3.3.1.0
     restart: unless-stopped
-    ports: 
+    ports:
       - "9998:9998"
   gotenberg:
     image: docker.io/gotenberg/gotenberg:7.10
@@ -61,32 +61,35 @@ services:
       - "gotenberg"
       - "--chromium-disable-javascript=true"
       - "--chromium-allow-list=file:///tmp/.*"
-    ports: 
+    ports:
       - "3000:3000"
-  
 x-casaos:
   architectures:
     - amd64
-    - arm
     - arm64
   main: paperless
   description:
-    en_us: Paperless-ngx forked from paperless-ng to continue the great work and distribute responsibility of supporting and advancing the project among a team of people.
+    en_US: Paperless-ngx forked from paperless-ng to continue the great work and distribute responsibility of supporting and advancing the project among a team of people.
   tagline:
-    en_us: Paperless-ngx is a document management system that transforms your physical documents into a searchable online archive so you can keep, well, less paper.
+    en_US: Paperless-ngx is a document management system that transforms your physical documents into a searchable online archive so you can keep, well, less paper.
   developer: paperless-ngx
   author: WisdomSky
   icon: https://avatars.githubusercontent.com/u/99562962
   thumbnail: https://avatars.githubusercontent.com/u/99562962
   title:
-    en_us: Paperless-ngx
+    en_US: Paperless-ngx
   tips:
     before_install:
-      en_us: |
+      en_US: |
         ## Credentials:
-        
+
         username: `admin`
-        
+
         password: `admin`
-  category: Coolstore
+  category: Productivity
   port_map: '8005'
+  id: com.wisdomsky.coolstore.paperless-ngx
+  index: /
+  scheme: http
+  version: 3.4.0
+  update_at: '2026-10-30'

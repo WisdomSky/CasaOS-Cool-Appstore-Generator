@@ -14,10 +14,10 @@ services:
       envs:
         - container: PUID
           description:
-            en_us: ''
+            en_US: ''
         - container: PGID
           description:
-            en_us: ''
+            en_US: ''
     ports:
       - target: 20211
         published: 20211
@@ -36,14 +36,19 @@ x-casaos:
     - arm64
   main: app
   description:
-    en_us: WIFI / LAN intruder detector
+    en_US: WIFI / LAN intruder detector
   tagline:
-    en_us: Wifi / Lan Intruder Detector
-  developer: ''
+    en_US: Wifi / Lan Intruder Detector
+  developer: 'Pucherot'
   author: WisdomSky
   icon: https://raw.githubusercontent.com/pucherot/Pi.Alert/main/docs/img/1_devices.jpg
   thumbnail: https://raw.githubusercontent.com/pucherot/Pi.Alert/main/docs/img/1_devices.jpg
   title:
-    en_us: Pi.alert
-  category: Coolstore
+    en_US: Pi.alert
+  category: Networking
   port_map: '20211'
+  id: com.wisdomsky.coolstore.pi-alert
+  index: /
+  scheme: http
+  version: '25'
+  update_at: '2026-10-30'

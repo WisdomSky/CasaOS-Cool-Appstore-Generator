@@ -1,0 +1,111 @@
+name: Build and publish AppStore v2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'store-config.json'
+      - 'supported-languages.json'
+      - 'package.json'
+      - '.github/workflows/publish-v2.yml'
+  schedule:
+    # Refresh image tags and publish the store every day.
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Base URL used for generated asset links (leave empty to use vars.BASE_URL or this repository on gh-pages)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  packages: read
+
+concurrency:
+  group: publish-v2
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Restore image tag cache
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: appstore-tag-cache-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: |
+            appstore-tag-cache-${{ github.ref_name }}-
+
+      - name: Validate source metadata
+        run: npm run validate
+
+      - name: Build AppStore v2
+        env:
+          BASE_URL: ${{ inputs.base_url || vars.BASE_URL || format('https://cdn.jsdelivr.net/gh/{0}@gh-pages', github.repository) }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm start
+
+      - name: Verify generated store
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f dist/store.json
+          test -f dist/index.json
+          test -f dist/README.md
+          node -e '
+            const fs = require("fs");
+            const store = JSON.parse(fs.readFileSync("dist/store.json", "utf8"));
+            const index = JSON.parse(fs.readFileSync("dist/index.json", "utf8"));
+            if (store.version !== 2) throw new Error("store.json is not v2");
+            if (index.version !== 2) throw new Error("index.json is not v2");
+            if (index.app_count !== index.apps.length) throw new Error("index app_count mismatch");
+            for (const app of index.apps) {
+              if (!fs.existsSync(`dist${app.compose_url}`)) throw new Error(`missing ${app.compose_url}`);
+              if (!fs.existsSync(`dist${app.meta_url}`)) throw new Error(`missing ${app.meta_url}`);
+            }
+            console.log(`Verified ${index.app_count} app(s) in the v2 store.`);
+          '
+
+      - name: Upload generated store
+        uses: actions/upload-artifact@v4
+        with:
+          name: appstore-v2
+          path: dist/
+
+      - name: Deploy to this repository (gh-pages)
+        if: ${{ vars.STORE_REPOSITORY == '' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./dist
+
+      - name: Deploy to external repository (gh-pages)
+        if: ${{ vars.STORE_REPOSITORY != '' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.STORE_DEPLOY_TOKEN }}
+          external_repository: ${{ vars.STORE_REPOSITORY }}
+          publish_branch: gh-pages
+          publish_dir: ./dist
+
+      - name: Show subscription URL
+        shell: bash
+        env:
+          STORE_BASE_URL: ${{ inputs.base_url || vars.BASE_URL || format('https://cdn.jsdelivr.net/gh/{0}@gh-pages', github.repository) }}
+        run: |
+          set -euo pipefail
+          echo "ZimaOS v2 store URL: ${STORE_BASE_URL%/}/store.json" >> "$GITHUB_STEP_SUMMARY"

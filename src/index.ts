@@ -1,77 +1,53 @@
 import 'dotenv/config'
-import Apps from "./classes/apps";
-import Appdater from "./classes/appdater";
+import StoreBuilder from "./classes/store";
+import Log, {LogLevel} from "./classes/log";
 import Utils from "./classes/utils";
-import path from 'path'
-import Log, { LogLevel } from "./classes/log";
-import fs from "fs";
-import GithubRepositoryHandler from "./classes/handlers/github";
 
+function getArgument(name: string): string | undefined {
+    const index = process.argv.indexOf(name);
+    if (index === -1) return undefined;
 
-// create dist directory
-Utils.createDir('dist');
-Utils.createDir(path.join('dist', 'Apps'));
-
-// copy assets dir into the dist directory
-Utils.copyDir('src/assets', 'dist');
-
-
-let appsListMd = [
-    `| Application  | Version | Description |`,
-    `| --- | --- | --- |`
-];
-
-for (const app of new Apps()) {
-
-    const updater = new Appdater(app);
-
-    updater.addContainerRepositoryHandler(new GithubRepositoryHandler());
-
-    // verbose output
-    Log.setLogLevel(LogLevel.Info);
-
-    // execute tag updater
-    await updater.updateTag();
-
-    // create dist app directory
-    const distAppPath = path.join('dist', 'Apps', app.name());
-    Utils.createDir(distAppPath);
-
-    // copy the source app into the dist app directory
-    Utils.copyDir(app.getPath(), distAppPath, ['config.js']);
-
-    // overwrite the docker-compose file inside the dist app directory
-    app.compose().writeToFile(path.resolve(distAppPath, app.getComposeFilename()));
-
-
-    // app's project page url
-    // let projectPage = app.compose()['x-casaos'].project_url;
-    // if (projectPage === undefined) {
-    //     if (app.image().indexOf('/') === -1) {
-    //         projectPage = `https://hub.docker.com/_/${app.image()}`;
-    //     } else {
-    //         projectPage = `https://hub.docker.com/r/${app.image()}`;
-    //     }
-    // }
-
-    // app's icon url
-    let icon = app.compose()['x-casaos'].icon;
-    if (icon === undefined || icon.trim().length === 0) {
-        icon = 'https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Coolstore@main/default-icon.svg';
-    }
-
-    // app's name
-    let title = app.compose()["x-casaos"].title.en_us;
-    let tagline = app.compose()["x-casaos"].tagline.en_us.replace(/(\r\n|\n|\r)/gm, '');
-
-    appsListMd.push(`| <img src="${icon}" width="15"/>&nbsp;&nbsp;&nbsp;[${title}](https://github.com/WisdomSky/CasaOS-Coolstore/tree/main/Apps/${app.name()}) | ${app.tag()} | ${tagline} |`);
-
+    return process.argv[index + 1];
 }
 
-// populate app's list in Readme.md
-let readme = fs.readFileSync('src/assets/README.md', 'utf8');
+const args = process.argv.slice(2);
+const validateOnly = args.includes('--validate-only') || args.includes('--validate');
+const skipTagUpdate = validateOnly || args.includes('--skip-tag-update');
+const outputDir = getArgument('--output') || 'dist';
+const baseUrl = getArgument('--base-url') ?? process.env.BASE_URL ?? '';
 
-readme = readme.replace('%APPSLIST%', appsListMd.join("\n"));
+Log.setLogLevel(LogLevel.Info);
 
-fs.writeFileSync(path.join('dist', 'README.md'), readme);
+const store = new StoreBuilder();
+store.load();
 
+let validation = store.validate();
+if (validation.errors.length > 0) {
+    for (const error of validation.errors) Log.error(`ERROR ${error}`);
+    for (const warning of validation.warnings) Log.error(`WARN  ${warning}`);
+    process.exit(1);
+}
+
+if (!skipTagUpdate) {
+    Log.info('Resolving image tags...');
+    await store.updateTags();
+}
+
+validation = store.validate();
+if (validation.errors.length > 0) {
+    for (const error of validation.errors) Log.error(`ERROR ${error}`);
+    for (const warning of validation.warnings) Log.error(`WARN  ${warning}`);
+    process.exit(1);
+}
+
+if (validateOnly) {
+    for (const warning of validation.warnings) Log.error(`WARN  ${warning}`);
+    Log.info(`Validation passed for ${store.appCount()} app(s).`);
+    process.exit(0);
+}
+
+await store.build(outputDir, baseUrl);
+
+const storeUrl = Utils.urlJoin(baseUrl, 'store.json');
+Log.info(`AppStore v2 generated in ${outputDir}`);
+Log.info(`Store URL: ${storeUrl}`);

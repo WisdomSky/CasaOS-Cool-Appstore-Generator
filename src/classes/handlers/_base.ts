@@ -2,9 +2,8 @@ import Appdater from "../appdater";
 import fetch, {Response} from "node-fetch";
 import path from "path";
 import fs from "fs";
-import Log from "../log";
-import Utils from "../utils";
 import crypto from "crypto";
+import Utils from "../utils";
 
 type Context = Appdater;
 
@@ -25,27 +24,37 @@ export default abstract class ContainerRepositoryHandler {
             this.context.log('Cache found! Using cached results in .cache directory.')
             return await cache.json() as T;
         }
-        let res: any = await this.dfetch(jsonURL, opts);
-        const code = res.status;
-        res = await (res).json();
 
-        if (code === 200) {
-            this.cacheContent(jsonURL, JSON.stringify(res), opts.longlivedcache);
+        const res = await this.dfetch(jsonURL, opts);
+        const text = await res.text();
+
+        let data: any;
+        try {
+            data = text.length === 0 ? null : JSON.parse(text);
+        } catch (e) {
+            throw new Error(`Invalid JSON response from ${jsonURL} (HTTP ${res.status})`);
         }
 
-        return res;
+        if (!res.ok) {
+            const message = data?.message || data?.errors?.[0]?.message || res.statusText;
+            throw new Error(`HTTP ${res.status} from ${jsonURL}: ${message}`);
+        }
+
+        this.cacheContent(jsonURL, text, opts.longlivedcache);
+
+        return data as T;
     }
 
     private async dfetch(url, opts) {
         const controller = new AbortController();
 
-        const id = setTimeout(() => controller.abort(), 10000);
+        const id = setTimeout(() => controller.abort(), 15000);
 
-        const response = await fetch(url, {...opts, signal: controller.signal});
-
-        clearTimeout(id);
-
-        return response;
+        try {
+            return await fetch(url, {...opts, signal: controller.signal});
+        } finally {
+            clearTimeout(id);
+        }
     }
 
 
@@ -71,11 +80,6 @@ export default abstract class ContainerRepositoryHandler {
             return new Response(fs.readFileSync(p, 'utf8'), { status: 200, statusText: 'OK'});
         }
         return null;
-    }
-
-    private isCache(url:string, longlivedCache:boolean = false): boolean {
-        const p = path.resolve('.cache', longlivedCache === true ?  'longlived' : this.getCurrentDate(), this.hash(url));
-        return fs.existsSync(p);
     }
 
     private getCurrentDate(): string {

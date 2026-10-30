@@ -5,7 +5,7 @@ export default {
     services: {
         joomladb: {
             tag: {
-                pattern: /^(\d+(\.\d+(\.\d)?)?)$/
+                pattern: /^8\.4(\.\d+)?$/
             }
         }
     }

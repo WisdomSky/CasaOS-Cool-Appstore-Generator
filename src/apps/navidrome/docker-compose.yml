@@ -21,22 +21,28 @@ services:
 x-casaos:
   architectures:
     - amd64
-    - arm32v6
-    - i386
+    - arm64
+    - arm
+    - '386'
   main: navidrome
   description:
-    en_us: Navidrome allows you to enjoy your music collection from anywhere, by making it available through a modern Web UI and through a wide range of third-party compatible mobile apps, for both iOS and Android devices.
+    en_US: Navidrome allows you to enjoy your music collection from anywhere, by making it available through a modern Web UI and through a wide range of third-party compatible mobile apps, for both iOS and Android devices.
   tagline:
-    en_us: Navidrome allows you to enjoy your music collection from anywhere, by making it available through a modern Web UI and through a wide range of third-party compatible mobile apps, for both iOS and Android devices.
+    en_US: Navidrome allows you to enjoy your music collection from anywhere, by making it available through a modern Web UI and through a wide range of third-party compatible mobile apps, for both iOS and Android devices.
   developer: Navidrome
   author: WisdomSky
   icon: https://pbs.twimg.com/profile_images/1310671419240583170/5lhEh5KF_400x400.jpg
   thumbnail: https://pbs.twimg.com/profile_images/1310671419240583170/5lhEh5KF_400x400.jpg
   title:
-    en_us: Navidrome
-  category: Coolstore
+    en_US: Navidrome
+  category: Media
   tips:
     before_install:
-      en_us: |
+      en_US: |
         The default path of the music library is pointed to `/DATA/Media/Music`. If your music library is stored elsewhere, you can change this by going into the app settings and changing the specified volume path.
   port_map: '4533'
+  id: com.wisdomsky.coolstore.navidrome
+  index: /
+  scheme: http
+  version: 0.64.2
+  update_at: '2026-10-30'

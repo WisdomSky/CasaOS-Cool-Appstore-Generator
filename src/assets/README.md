@@ -1,4 +1,3 @@
-
 ![CasaOS Coolstore](https://raw.githubusercontent.com/WisdomSky/CasaOS-Coolstore/main/banner.png)
 
 # CasaOS Coolstore
@@ -6,6 +5,8 @@
 [![Number of Unique Installs](https://visitly.paodayag.dev/coolstore.zip/badge?unique=1&label=Unique%20Installs)](https://visitly.paodayag.dev) [![Number of Installs](https://visitly.paodayag.dev/coolstore.zip/badge?label=Total%20Downloads)](https://visitly.paodayag.dev)
 
 Just a cool appstore. ⛄
+
+This repository is generated for the **CasaOS / ZimaOS AppStore v2** protocol.
 
 ---
 
@@ -32,36 +33,40 @@ Just a cool appstore. ⛄
 
 Just an another CasaOS third-party Appstore with ❄**Cool**❄ apps.
 
+The store is published using the AppStore **v2** format and currently contains **%APP_COUNT%** applications.
 
 ---
 
-### ❄ CasaOS Coolstore URL
+### ❄ CasaOS / ZimaOS Appstore URL
 
-    https://casaos-appstore.paodayag.dev/coolstore.zip
+    %STORE_URL%
+
+---
 
 ## ✅ Installation
 
-- Go to your CasaOS dashboard.
+### CasaOS
 
-  ![Step 1](https://raw.githubusercontent.com/WisdomSky/CasaOS-LinuxServer-AppStore/main/tip-1.jpg)
+1. Open the CasaOS dashboard.
+2. Open the App Store and click **Add Source**.
+3. Paste the store URL above and click **Add**.
+4. Wait for the app list to load.
 
-- Open the appstore and click `Add Source` button  located on the right just above the apps list.
+### ZimaOS
 
-  ![Step 2](https://raw.githubusercontent.com/WisdomSky/CasaOS-LinuxServer-AppStore/main/tip-2.jpg)
+1. Open **App Store** → **Settings** → **App Store Sources**.
+2. Add a custom source using the store URL above.
+3. Save and refresh the app list.
 
-- Paste the appstore link `https://casaos-appstore.paodayag.dev/coolstore.zip` and then click `Add` to submit.
+> **NOTE:** AppStore v2 requires a recent CasaOS/ZimaOS version. Legacy v1 clients should continue to use the existing v1 store until they are upgraded.
 
-  ![Step 3](https://raw.githubusercontent.com/WisdomSky/CasaOS-LinuxServer-AppStore/main/tip-3.jpg)
-
-- Wait for the installation to finish. Done!
-
-> **NOTE: Custom Appstore is only supported on CasaOS version [0.4.4](https://blog.casaos.io/blog/32.html) and above. How to upgrade? [Click here](#-how-to-upgrade-casaos)**
 ---
 
 ## 🛠 List of Applications
 
+| Application | Version | Description |
+| --- | --- | --- |
 %APPSLIST%
-
 
 ## 💡 Frequently Asked Questions
 

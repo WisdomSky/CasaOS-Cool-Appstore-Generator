@@ -5,7 +5,7 @@ export default {
     services: {
         db: {
             tag: {
-                pattern: /^\d+(\.\d+(\.\d+)?)?$/
+                pattern: /^8\.0(\.\d+)?$/
             }
         }
     }

@@ -1,10 +1,13 @@
 {
   "name": "casaos-cool-appstore-generator",
-  "version": "0.0.1",
-  "description": "",
+  "version": "2.0.0",
+  "description": "Generates a CasaOS/ZimaOS AppStore v2 for the CasaOS Coolstore.",
   "main": "src/index.ts",
   "scripts": {
-    "start": "npx tsx src/index.ts"
+    "start": "tsx src/index.ts",
+    "build": "tsx src/index.ts",
+    "validate": "tsx src/index.ts --validate-only",
+    "update": "tsx src/index.ts --skip-tag-update"
   },
   "repository": "https://github.com/WisdomSky/CasaOS-Cool-Appstore-Generator.git",
   "homepage": "https://github.com/WisdomSky/CasaOS-Cool-Appstore-Generator",
@@ -12,21 +15,27 @@
     "docker",
     "docker-compose",
     "casaos",
+    "zimaos",
     "casaos-appstore",
-    "appstore"
+    "appstore",
+    "appstore-v2"
   ],
   "author": "Julian Paolo Dayag <WisdomSky>",
   "license": "ISC",
   "dependencies": {
     "colors": "^1.4.0",
-    "docker-compose-parser": "^0.0.3",
     "dotenv": "^16.3.1",
+    "js-yaml": "^4.1.0",
     "node-fetch": "^3.3.1",
     "typescript": "^5.1.6"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.3.2",
     "tsx": "^3.12.7"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "type": "module"
 }
