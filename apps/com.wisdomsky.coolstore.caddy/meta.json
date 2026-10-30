@@ -1,0 +1,21 @@
+{
+  "tagline": "Caddy - The Ultimate Server With Automatic Https.",
+  "description": "Caddy - The Ultimate Server with Automatic HTTPS.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.caddy/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "Caddy",
+  "category": "Networking",
+  "architectures": [
+    "amd64",
+    "arm",
+    "arm64"
+  ],
+  "version": "2.11.7",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.caddy",
+  "categories": [
+    "networking"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

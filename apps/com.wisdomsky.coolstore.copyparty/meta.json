@@ -1,0 +1,25 @@
+{
+  "tagline": "Turn almost any device into a file server.",
+  "description": "Single-binary file server with a browser UI, resumable uploads, WebDAV/FTP/SFTP options, media thumbnails, search, and sharing. Works on everything from a Raspberry Pi to a NAS.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.copyparty/assets/thumbnail.png",
+  "tips": {
+    "before_install": "The default account is `admin` with password `casaos`. Change the password in the compose file or app settings. Files are served from `/DATA/AppData/copyparty/files`."
+  },
+  "author": "WisdomSky",
+  "developer": "9001",
+  "category": "Productivity",
+  "architectures": [
+    "amd64",
+    "arm64",
+    "arm",
+    "386"
+  ],
+  "version": "1.20.26",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.copyparty",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

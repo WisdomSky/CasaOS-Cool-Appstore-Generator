@@ -1,0 +1,23 @@
+{
+  "tagline": "Bulk organization tools for Immich.",
+  "description": "Unofficial Immich companion for bulk people management, merge suggestions, missing-location fixes, potential albums, analytics, and natural-language library search.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.immich-power-tools/assets/thumbnail.png",
+  "tips": {
+    "before_install": "This is a companion app for Immich. Set `IMMICH_URL`, `IMMICH_API_KEY`, and the Immich Postgres credentials in the app settings. If Immich runs in Docker, `host.docker.internal` reaches the host; expose Immich PostgreSQL on the host or adjust `DB_HOST` to reach it."
+  },
+  "author": "WisdomSky",
+  "developer": "Immich Power Tools",
+  "category": "Media",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "latest",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.immich-power-tools",
+  "categories": [
+    "media"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

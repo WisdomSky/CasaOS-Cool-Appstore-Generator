@@ -1,0 +1,23 @@
+{
+  "tagline": "Turnkey self-hosted web radio.",
+  "description": "AzuraCast manages radio stations, playlists, media, DJs, and Icecast/Shoutcast streams from one web panel. The all-in-one image bundles the database, Redis, nginx, Liquidsoap, and station services.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.azuracast/assets/thumbnail.png",
+  "tips": {
+    "before_install": "The web installer opens on first visit. Station streams use host ports `8000-8010` in this package; add more mappings in the app settings if you run more stations. SFTP is on port `2022`."
+  },
+  "author": "WisdomSky",
+  "developer": "AzuraCast",
+  "category": "Media",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "latest",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.azuracast",
+  "categories": [
+    "media"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

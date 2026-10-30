@@ -1,0 +1,21 @@
+{
+  "tagline": "HRConvert2 is a self-hosted drag-and-drop file conversion server & file sharing tool that supports 86 file formats with 4 color schemes & 13 end-user selctable languages.",
+  "description": "HRConvert2 is a self-hosted drag-and-drop file conversion server & file sharing tool that supports 86 file formats with 4 color schemes & 13 end-user selctable languages.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.hrconvert2/assets/thumbnail.png",
+  "screenshot_link": [
+    "/apps/com.wisdomsky.coolstore.hrconvert2/assets/screenshot-1.png"
+  ],
+  "author": "WisdomSky",
+  "developer": "zelon88",
+  "category": "Productivity",
+  "architectures": [
+    "amd64"
+  ],
+  "version": "latest",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.hrconvert2",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages"
+}

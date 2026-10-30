@@ -1,0 +1,32 @@
+name: readerr
+services:
+  app:
+    image: hotio/readarr
+    restart: unless-stopped
+    environment:
+      PUID: $PUID
+      PGID: $PGID
+      TZ: $TZ
+    ports:
+      - target: 8787
+        published: 8787
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /DATA/AppData/$AppID/config
+        target: /config
+      - type: bind
+        source: /portainer/downloads
+        target: /downloads
+      - type: bind
+        source: /portainer/books
+        target: /books
+x-casaos:
+  id: com.wisdomsky.coolstore.readerr
+  main: app
+  index: /
+  port_map: "8787"
+  scheme: http
+  icon: https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages/apps/com.wisdomsky.coolstore.readerr/assets/icon.png
+  title: Readarr
+  version: latest

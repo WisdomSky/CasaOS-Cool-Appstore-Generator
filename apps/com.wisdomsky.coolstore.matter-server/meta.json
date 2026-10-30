@@ -1,0 +1,20 @@
+{
+  "tagline": "Matter support in Home Assistant",
+  "description": "A Matter Controller Server over WebSockets using the official Matter (formerly CHIP) SDK as a base and provides both a server and client implementation. The goal of this project is primary to have Matter support in Home Assistant but its universal approach makes it suitable to be used in other projects too.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.matter-server/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "Home Assistant",
+  "category": "Home",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "8.1.0",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.matter-server",
+  "categories": [
+    "home"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

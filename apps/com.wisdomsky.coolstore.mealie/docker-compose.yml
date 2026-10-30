@@ -1,0 +1,27 @@
+name: mealie
+services:
+  app:
+    image: hkotel/mealie:omni-nightly
+    ports:
+      - "3000:3000"
+      - "9000:9000"
+    volumes:
+      - type: bind
+        source: /DATA/AppData/mealie
+        target: /app/data/
+    environment:
+      ALLOW_SIGNUP: true
+      PUID: $PUID
+      PGID: $PGID
+      TZ: $TZ
+      BASE_URL: https://0.0.0.0
+    restart: unless-stopped
+x-casaos:
+  id: com.wisdomsky.coolstore.mealie
+  main: app
+  index: /
+  port_map: "3000"
+  scheme: http
+  icon: https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages/apps/com.wisdomsky.coolstore.mealie/assets/icon.png
+  title: Mealie
+  version: omni-nightly

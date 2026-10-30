@@ -1,0 +1,27 @@
+name: esphome
+services:
+  app:
+    image: esphome/esphome:2026.10
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    environment:
+      USERNAME: casaos
+      PASSWORD: casaos
+    volumes:
+      - type: bind
+        source: /DATA/AppData/esphome/config
+        target: /config
+      - type: bind
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+x-casaos:
+  id: com.wisdomsky.coolstore.esphome
+  main: app
+  index: /
+  port_map: "6052"
+  scheme: http
+  icon: https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages/apps/com.wisdomsky.coolstore.esphome/assets/icon.png
+  title: ESPHome
+  version: "2026.10"

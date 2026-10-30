@@ -1,0 +1,25 @@
+name: webdav
+services:
+  app:
+    image: derkades/webdav:latest
+    restart: unless-stopped
+    environment:
+      USERNAME: casaos
+      PASSWORD: casaos
+    ports:
+      - target: 80
+        published: 8080
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /DATA/Documents
+        target: /data
+x-casaos:
+  id: com.wisdomsky.coolstore.webdav
+  main: app
+  index: /
+  port_map: "8080"
+  scheme: http
+  icon: https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages/apps/com.wisdomsky.coolstore.webdav/assets/icon.png
+  title: WebDAV
+  version: latest

@@ -1,0 +1,23 @@
+{
+  "tagline": "Another Free And Open-source Cms",
+  "description": "Another free and open-source CMS",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.joomla/assets/thumbnail.png",
+  "tips": {
+    "before_install": "For database connection, select `MySQL` then on the `database host` field put `joomladb`, for `database user` put `root` and for `database password` put `casaos`\n"
+  },
+  "author": "WisdomSky",
+  "developer": "Open Source Matters",
+  "category": "Productivity",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "6.2.0-apache",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.joomla",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

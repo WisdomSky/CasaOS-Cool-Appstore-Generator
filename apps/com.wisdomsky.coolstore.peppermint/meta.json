@@ -1,0 +1,32 @@
+{
+  "tagline": "Peppermint is a central hub for your help desk. A powerfully easy system for tracking, prioritising, and solving customer support tickets.",
+  "description": "Peppermint is a central hub for your help desk. A powerfully easy system for tracking, prioritising, and solving customer support tickets.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.peppermint/assets/thumbnail.png",
+  "screenshot_link": [
+    "/apps/com.wisdomsky.coolstore.peppermint/assets/screenshot-1.png",
+    "/apps/com.wisdomsky.coolstore.peppermint/assets/screenshot-2.png",
+    "/apps/com.wisdomsky.coolstore.peppermint/assets/screenshot-3.png",
+    "/apps/com.wisdomsky.coolstore.peppermint/assets/screenshot-4.png",
+    "/apps/com.wisdomsky.coolstore.peppermint/assets/screenshot-5.png",
+    "/apps/com.wisdomsky.coolstore.peppermint/assets/screenshot-6.png",
+    "/apps/com.wisdomsky.coolstore.peppermint/assets/screenshot-7.png",
+    "/apps/com.wisdomsky.coolstore.peppermint/assets/screenshot-8.png",
+    "/apps/com.wisdomsky.coolstore.peppermint/assets/screenshot-9.png"
+  ],
+  "tips": {
+    "before_install": "### Additional Instructions:\n\nAfter finished installing, open the `app settings` and update the `BASE_URL` to point it to your Home Server's IP Address.\n\ne.g:\n```\nhttp://192.168.31.31:5000\n```\n\n### Default credentials:\n\nUsername: `admin@admin.com`\n\nPassword: `1234`\n"
+  },
+  "author": "WisdomSky",
+  "developer": "Pepperlabs",
+  "category": "Productivity",
+  "architectures": [
+    "amd64"
+  ],
+  "version": "latest",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.peppermint",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages"
+}

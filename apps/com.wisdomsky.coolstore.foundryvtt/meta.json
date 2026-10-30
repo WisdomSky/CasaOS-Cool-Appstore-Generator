@@ -1,0 +1,23 @@
+{
+  "tagline": "Self-hosted virtual tabletop.",
+  "description": "Runs Foundry Virtual Tabletop headlessly in Docker, with a browser-based game server, world data, modules, and assets. Requires a Foundry license but no external database.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.foundryvtt/assets/thumbnail.png",
+  "tips": {
+    "before_install": "Requires a purchased FoundryVTT license. Set `FOUNDRY_USERNAME`, `FOUNDRY_PASSWORD`, `FOUNDRY_ADMIN_KEY`, and optionally `FOUNDRY_LICENSE_KEY` in the app settings. The stable hostname is required for license activation."
+  },
+  "author": "WisdomSky",
+  "developer": "Foundry Virtual Tabletop",
+  "category": "Others",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "14.369",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.foundryvtt",
+  "categories": [
+    "others"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

@@ -1,0 +1,20 @@
+{
+  "tagline": "Draw.io (formerly Diagramly) Is Free Online Diagram Software. You Can Use It As A Flowchart Maker, Network Diagram Software, To Create Uml Online, As An Er Diagram Tool, To Design Database Schema, To Build Bpmn Online, As A Circuit Diagram Maker, And More. Draw.io Can Import .vsdx, Gliffy™ And Lucidchart™ Files.",
+  "description": "draw-io (formerly Diagramly) is free online diagram software. You can use it as a flowchart maker, network diagram software, to create UML online, as an ER diagram tool, to design database schema, to build BPMN online, as a circuit diagram maker, and more. draw-io can import .vsdx, Gliffy™ and Lucidchart™ files.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.draw-io/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "JGraph",
+  "category": "Productivity",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "32.6.1",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.draw-io",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

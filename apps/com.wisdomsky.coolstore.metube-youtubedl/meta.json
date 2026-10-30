@@ -1,0 +1,20 @@
+{
+  "tagline": "Web Gui For Youtube-dl With Playlist Support. Allows You To Download Videos From Youtube And Dozens Of Other Sites (https://ytdl-org.github.io/youtube-dl/supportedsites.html).",
+  "description": "Web GUI for youtube-dl with playlist support. Allows you to download videos from YouTube and dozens of other sites (https://ytdl-org.github.io/youtube-dl/supportedsites.html).",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.metube-youtubedl/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "alexta69",
+  "category": "Media",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "2025-07-30",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.metube-youtubedl",
+  "categories": [
+    "media"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

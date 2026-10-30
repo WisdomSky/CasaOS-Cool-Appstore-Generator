@@ -1,0 +1,23 @@
+{
+  "tagline": "Paperless-ngx is a document management system that transforms your physical documents into a searchable online archive so you can keep, well, less paper.",
+  "description": "Paperless-ngx forked from paperless-ng to continue the great work and distribute responsibility of supporting and advancing the project among a team of people.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.paperless-ngx/assets/thumbnail.jpg",
+  "tips": {
+    "before_install": "## Credentials:\n\nusername: `admin`\n\npassword: `admin`\n"
+  },
+  "author": "WisdomSky",
+  "developer": "paperless-ngx",
+  "category": "Productivity",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "3.4.0",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.paperless-ngx",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

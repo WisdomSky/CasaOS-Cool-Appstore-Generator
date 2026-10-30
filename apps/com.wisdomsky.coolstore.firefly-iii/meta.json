@@ -1,0 +1,23 @@
+{
+  "tagline": "Take control of your personal finances.",
+  "description": "Double-entry personal finance manager for accounts, budgets, categories, bills, and reports. Supports imports, rules, multiple currencies, and recurring transactions.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.firefly-iii/assets/thumbnail.png",
+  "tips": {
+    "before_install": "The first visit creates the admin account. Change `APP_KEY` and `STATIC_CRON_TOKEN` in the app settings before exposing Firefly outside your LAN. The cron container handles recurring transactions and bills."
+  },
+  "author": "WisdomSky",
+  "developer": "Firefly III",
+  "category": "Finance",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "6.7.9",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.firefly-iii",
+  "categories": [
+    "finance"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

@@ -1,0 +1,23 @@
+{
+  "tagline": "Rocket. Chat is a customizable open source communications platform for organizations with high standards of data protection.",
+  "description": "Rocket. Chat is a customizable open source communications platform for organizations with high standards of data protection. It enables real-time conversations between colleagues, with other companies or with your customers, across devices on web, desktop or mobile.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.rocket-chat/assets/thumbnail.svg",
+  "tips": {
+    "before_install": "### Note\n\nAfter installing the Rocket. Chat app, wait for at least 1 to 5 minutes before opening the Web UI.\n\nOpening the Web UI right after installation can cause Rocket. Chat to crash before it finishes initializing.\n\nIf you access CasaOS from another device, change `ROOT_URL` in the app settings to `http://<casaos-ip>:3000`."
+  },
+  "author": "WisdomSky",
+  "developer": "Rocket Chat",
+  "category": "Social",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "8.9.0",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.rocket-chat",
+  "categories": [
+    "social"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

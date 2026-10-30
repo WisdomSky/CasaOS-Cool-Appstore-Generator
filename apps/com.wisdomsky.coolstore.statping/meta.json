@@ -1,0 +1,21 @@
+{
+  "tagline": "An Easy To Use Status Page For Your Websites And Applications. Statping Will Automatically Fetch The Application And Render A Beautiful Status Page With Tons Of Features For You To Build An Even Better Status Page.",
+  "description": "An easy to use Status Page for your websites and applications. Statping will automatically fetch the application and render a beautiful status page with tons of features for you to build an even better status page.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.statping/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "Statping",
+  "category": "Developer",
+  "architectures": [
+    "amd64",
+    "arm",
+    "arm64"
+  ],
+  "version": "0.90.74",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.statping",
+  "categories": [
+    "developer"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

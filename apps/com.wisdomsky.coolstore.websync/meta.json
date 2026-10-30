@@ -1,0 +1,22 @@
+{
+  "tagline": "Websync is intended to be an rsync task manager, where rsync tasks can be added, scheduled and maintained in a sane manner.",
+  "description": "Websync is intended to be an rsync task manager, where rsync tasks can be added, scheduled and maintained in a sane manner.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.websync/assets/thumbnail.png",
+  "screenshot_link": [
+    "/apps/com.wisdomsky.coolstore.websync/assets/screenshot-1.png",
+    "/apps/com.wisdomsky.coolstore.websync/assets/screenshot-2.png"
+  ],
+  "author": "WisdomSky",
+  "developer": "Furier",
+  "category": "Productivity",
+  "architectures": [
+    "amd64"
+  ],
+  "version": "latest",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.websync",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages"
+}

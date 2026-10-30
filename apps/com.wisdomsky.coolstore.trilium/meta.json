@@ -1,0 +1,21 @@
+{
+  "tagline": "Trilium Notes Is A Hierarchical Note Taking Application With Focus On Building Large Personal Knowledge Bases",
+  "description": "Trilium Notes is a hierarchical note taking application with focus on building large personal knowledge bases",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.trilium/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "Trilium Notes",
+  "category": "Productivity",
+  "architectures": [
+    "amd64",
+    "arm",
+    "arm64"
+  ],
+  "version": "0.63.7",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.trilium",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

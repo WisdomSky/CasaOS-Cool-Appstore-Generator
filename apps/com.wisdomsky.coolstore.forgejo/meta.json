@@ -1,0 +1,24 @@
+{
+  "tagline": "Painless self-hosted Git forge.",
+  "description": "Lightweight, community-governed Git service with repositories, issues, pull requests, packages, and Actions. Runs as a single SQLite-backed container.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.forgejo/assets/thumbnail.png",
+  "tips": {
+    "before_install": "The web UI is on port `3002`; Git SSH is on port `2222`. Complete the first-run onboarding at the web UI.\n\nIf you access CasaOS from another device, change `FORGEJO__server__ROOT_URL` in the app settings to `http://<casaos-ip>:3002/`."
+  },
+  "author": "WisdomSky",
+  "developer": "Forgejo",
+  "category": "Developer",
+  "architectures": [
+    "amd64",
+    "arm64",
+    "arm"
+  ],
+  "version": "17.0.1",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.forgejo",
+  "categories": [
+    "developer"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

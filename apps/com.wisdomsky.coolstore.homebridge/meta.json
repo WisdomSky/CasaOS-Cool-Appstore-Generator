@@ -1,0 +1,21 @@
+{
+  "tagline": "Homebridge Allows You To Integrate With Smart Home Devices That Do Not Natively Support Homekit. There Are Over 2,000 Homebridge Plugins Supporting Thousands Of Different Smart Accessories.",
+  "description": "Homebridge allows you to integrate with smart home devices that do not natively support HomeKit. There are over 2,000 Homebridge plugins supporting thousands of different smart accessories.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.homebridge/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "Homebridge",
+  "category": "Home",
+  "architectures": [
+    "amd64",
+    "arm",
+    "arm64"
+  ],
+  "version": "2023-01-08",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.homebridge",
+  "categories": [
+    "home"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

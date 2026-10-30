@@ -1,0 +1,22 @@
+{
+  "tagline": "An open-source web hosting control panel that allows users to manage their websites, domains, email accounts, databases, and more.",
+  "description": "Hestia Control Panel (HestiaCP) is an open-source web hosting control panel that allows users to manage their websites, domains, email accounts, databases, and more. It provides a user-friendly interface for managing web hosting environments and simplifies various administrative tasks.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.hestiacp/assets/thumbnail.png",
+  "tips": {
+    "before_install": "The first start can take several minutes while HestiaCP initializes.\n\nFind the generated `admin` password in the app container logs, or set a new one from the CasaOS terminal:\n\n```\n/usr/local/hestia/bin/v-change-user-password admin YOUR_NEW_PASSWORD\n```\n\nThe control panel is available on port `8083`. Add ports `80` and `443` in the app settings if you want HestiaCP to serve websites directly.\n"
+  },
+  "author": "WisdomSky",
+  "developer": "HestiaCP",
+  "category": "Developer",
+  "architectures": [
+    "amd64"
+  ],
+  "version": "1.10.5.2",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.hestiacp",
+  "categories": [
+    "developer"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

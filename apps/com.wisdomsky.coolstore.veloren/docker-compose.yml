@@ -1,0 +1,34 @@
+name: veloren
+services:
+  app:
+    image: registry.gitlab.com/veloren/veloren/server-cli:weekly
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    ports:
+      - target: 14004
+        published: "14004"
+        protocol: tcp
+      - target: 14004
+        published: "14004"
+        protocol: udp
+      - target: 14005
+        published: "14005"
+        protocol: tcp
+      - target: 14006
+        published: "14006"
+        protocol: udp
+    environment:
+      RUST_LOG: debug,common::net=info
+    volumes:
+      - type: bind
+        source: /DATA/AppData/veloren/userdata
+        target: /opt/userdata
+x-casaos:
+  id: com.wisdomsky.coolstore.veloren
+  main: app
+  index: /
+  port_map: "14004"
+  icon: https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages/apps/com.wisdomsky.coolstore.veloren/assets/icon.png
+  title: Veloren Server
+  version: weekly

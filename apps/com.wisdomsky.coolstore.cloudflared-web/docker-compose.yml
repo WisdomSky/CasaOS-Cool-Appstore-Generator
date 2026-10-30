@@ -1,0 +1,23 @@
+name: cloudflared-web
+services:
+  cloudflared:
+    image: wisdomsky/cloudflared-web:2026.10.5
+    restart: unless-stopped
+    network_mode: host
+    ports:
+      - target: 14333
+        published: "14333"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /DATA/AppData/cloudflared-web/config
+        target: /config
+x-casaos:
+  id: com.wisdomsky.coolstore.cloudflared-web
+  main: cloudflared
+  index: /
+  port_map: "14333"
+  scheme: http
+  icon: https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages/apps/com.wisdomsky.coolstore.cloudflared-web/assets/icon.png
+  title: Cloudflared-web
+  version: 2026.10.5

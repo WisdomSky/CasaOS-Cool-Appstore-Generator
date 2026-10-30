@@ -1,0 +1,23 @@
+{
+  "tagline": "Playit.gg is a global proxy that allows anyone to host a server without port forwarding.",
+  "description": "Playit.gg is a global proxy that allows anyone to host a server without port forwarding. We use tunneling. Only the server needs to run the program, not every player!",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.playit-docker-web/assets/thumbnail.png",
+  "screenshot_link": [
+    "/apps/com.wisdomsky.coolstore.playit-docker-web/assets/screenshot-1.png"
+  ],
+  "author": "WisdomSky",
+  "developer": "Playit.gg",
+  "category": "Networking",
+  "architectures": [
+    "amd64",
+    "arm",
+    "arm64"
+  ],
+  "version": "1.1.0",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.playit-docker-web",
+  "categories": [
+    "networking"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages"
+}

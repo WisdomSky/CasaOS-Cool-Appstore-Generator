@@ -1,0 +1,20 @@
+{
+  "tagline": "RSSHub is an open source, easy to use, and extensible RSS feed generator. It's capable of generating RSS feeds from pretty much everything.",
+  "description": "RSSHub is an open source, easy to use, and extensible RSS feed generator. It's capable of generating RSS feeds from pretty much everything.\n\nRSSHub delivers millions of contents aggregated from all kinds of sources, our vibrant open source community is ensuring the deliver of RSSHub's new routes, new features and bug fixes.\n\nRSSHub can be used with browser extension RSSHub Radar and mobile auxiliary app RSSBud (iOS) and RSSAid (Android)\n",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.rsshub/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "DIYgod",
+  "category": "Productivity",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "2026-10-29",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.rsshub",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

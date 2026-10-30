@@ -1,0 +1,29 @@
+name: vdfusion
+services:
+  app:
+    image: ghcr.io/vsl86/vdfusion:v1.2.0
+    restart: unless-stopped
+    ports:
+      - target: 8080
+        published: "8080"
+        protocol: tcp
+    environment:
+      VDF_DB_PATH: /app/storage/vdf.db
+      VDF_LOG_LEVEL: info
+      VDF_SERVER_ADDR: ":8080"
+    volumes:
+      - type: bind
+        source: /DATA/AppData/vdfusion
+        target: /app/storage
+      - type: bind
+        source: /DATA/Media
+        target: /media
+x-casaos:
+  id: com.wisdomsky.coolstore.vdfusion
+  main: app
+  index: /
+  port_map: "8080"
+  scheme: http
+  icon: https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages/apps/com.wisdomsky.coolstore.vdfusion/assets/icon.svg
+  title: VDFusion
+  version: 1.2.0

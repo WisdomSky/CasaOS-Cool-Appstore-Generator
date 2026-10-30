@@ -1,0 +1,26 @@
+{
+  "tagline": "Your trip. Your plan.",
+  "description": "Self-hosted collaborative travel planner with maps, day plans, bookings, budgets, packing lists, journals, and optional AI assistance. Supports real-time collaboration and offline-first PWA use.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.trek/assets/thumbnail.png",
+  "screenshot_link": [
+    "/apps/com.wisdomsky.coolstore.trek/assets/screenshot-1.png",
+    "/apps/com.wisdomsky.coolstore.trek/assets/screenshot-2.png"
+  ],
+  "tips": {
+    "before_install": "The initial admin account is `admin@example.com` with password `casaos`. Change it after first login and keep `ENCRYPTION_KEY` safe. Use HTTPS if exposing TREK to the internet."
+  },
+  "author": "WisdomSky",
+  "developer": "liketrek",
+  "category": "Productivity",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "5.0.1",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.trek",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages"
+}

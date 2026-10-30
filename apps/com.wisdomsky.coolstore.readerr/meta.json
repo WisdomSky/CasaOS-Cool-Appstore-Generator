@@ -1,0 +1,21 @@
+{
+  "tagline": "Readarr Usent Server",
+  "description": "Readarr usent server",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.readerr/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "Readarr",
+  "category": "Media",
+  "architectures": [
+    "amd64",
+    "arm",
+    "arm64"
+  ],
+  "version": "latest",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.readerr",
+  "categories": [
+    "media"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

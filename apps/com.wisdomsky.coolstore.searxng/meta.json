@@ -1,0 +1,24 @@
+{
+  "tagline": "Privacy-respecting metasearch.",
+  "description": "Self-hosted search engine that aggregates results from many sources without tracking or profiling users. Supports JSON/RSS output and extensive engine configuration.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.searxng/assets/thumbnail.png",
+  "tips": {
+    "before_install": "Change `SEARXNG_SECRET` and `SEARXNG_BASE_URL` in the app settings. SearXNG has no built-in login; put it behind a reverse proxy if exposed publicly."
+  },
+  "author": "WisdomSky",
+  "developer": "SearXNG",
+  "category": "Productivity",
+  "architectures": [
+    "amd64",
+    "arm64",
+    "arm"
+  ],
+  "version": "2026.10.29-c15647b5a",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.searxng",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

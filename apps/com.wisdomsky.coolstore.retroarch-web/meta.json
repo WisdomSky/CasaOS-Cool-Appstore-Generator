@@ -1,0 +1,21 @@
+{
+  "tagline": "Online retro games emulator.",
+  "description": "Online retro games emulator.The RetroArch Web Player is RetroArch compiled through Emscripten.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.retroarch-web/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "Libretro",
+  "category": "Others",
+  "architectures": [
+    "amd64",
+    "arm64",
+    "arm"
+  ],
+  "version": "latest",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.retroarch-web",
+  "categories": [
+    "others"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

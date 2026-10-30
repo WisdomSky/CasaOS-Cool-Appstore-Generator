@@ -1,0 +1,21 @@
+{
+  "tagline": "Wifi / Lan Intruder Detector",
+  "description": "WIFI / LAN intruder detector",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.pi-alert/assets/thumbnail.jpg",
+  "author": "WisdomSky",
+  "developer": "Pucherot",
+  "category": "Networking",
+  "architectures": [
+    "amd64",
+    "arm",
+    "arm64"
+  ],
+  "version": "25",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.pi-alert",
+  "categories": [
+    "networking"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

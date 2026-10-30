@@ -1,0 +1,24 @@
+{
+  "tagline": "Fast Vpn Server With Easy To Use User Interface",
+  "description": "Fast VPN Server with easy to use User Interface",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.wg-easy/assets/thumbnail.png",
+  "tips": {
+    "before_install": "Default password is `casaos`."
+  },
+  "author": "WisdomSky",
+  "developer": "Wg-Easy",
+  "category": "Networking",
+  "architectures": [
+    "amd64",
+    "arm",
+    "arm64"
+  ],
+  "version": "15.5.0",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.wg-easy",
+  "categories": [
+    "networking"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

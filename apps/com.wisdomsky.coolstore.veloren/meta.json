@@ -1,0 +1,22 @@
+{
+  "tagline": "Open-source multiplayer voxel RPG.",
+  "description": "Veloren is an open-world voxel action RPG; this image runs a dedicated multiplayer server. Players connect with the Veloren client on port 14004.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.veloren/assets/thumbnail.png",
+  "tips": {
+    "before_install": "This is a game server with no web UI. The first start generates a world and can take several minutes. Connect using the Veloren client to port `14004`. Server commands are available from the CasaOS terminal."
+  },
+  "author": "WisdomSky",
+  "developer": "Veloren",
+  "category": "Others",
+  "architectures": [
+    "amd64"
+  ],
+  "version": "weekly",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.veloren",
+  "categories": [
+    "others"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

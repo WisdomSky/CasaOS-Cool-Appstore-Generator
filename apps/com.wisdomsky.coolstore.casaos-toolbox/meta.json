@@ -1,0 +1,24 @@
+{
+  "tagline": "Provides additional features to CasaOS.",
+  "description": "CasaOS Toolbox is an extension application that provides additional features to CasaOS.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.casaos-toolbox/assets/thumbnail.png",
+  "screenshot_link": [
+    "/apps/com.wisdomsky.coolstore.casaos-toolbox/assets/screenshot-1.png",
+    "/apps/com.wisdomsky.coolstore.casaos-toolbox/assets/screenshot-2.png",
+    "/apps/com.wisdomsky.coolstore.casaos-toolbox/assets/screenshot-3.png"
+  ],
+  "author": "WisdomSky",
+  "developer": "WisdomSky",
+  "category": "Others",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "0.2",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.casaos-toolbox",
+  "categories": [
+    "others"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages"
+}

@@ -1,0 +1,23 @@
+{
+  "tagline": "Recommendations from your watch history, straight to Seer.",
+  "description": "Reads recently watched media from Plex, Jellyfin, or Emby, finds similar titles via TMDb or an LLM, and sends requests to Seer. Includes scheduling, approval controls, filters, and cleanup automation.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.suggestarr/assets/thumbnail.png",
+  "tips": {
+    "before_install": "The first-run wizard asks for a TMDb API key and your media server and Seer details. Back up `/DATA/AppData/suggestarr/config_files` before updates."
+  },
+  "author": "WisdomSky",
+  "developer": "giuseppe99barchetta",
+  "category": "Media",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "3.2.0",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.suggestarr",
+  "categories": [
+    "media"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

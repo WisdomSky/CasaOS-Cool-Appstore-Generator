@@ -1,0 +1,21 @@
+{
+  "tagline": "Privatebin Is A Minimalist, Open Source Online Pastebin Where The Server Has Zero Knowledge Of Pasted Data!\n",
+  "description": "PrivateBin is a minimalist, open source online pastebin where the server has zero knowledge of pasted data!",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.privatebin/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "PrivateBin",
+  "category": "Productivity",
+  "architectures": [
+    "amd64",
+    "arm",
+    "arm64"
+  ],
+  "version": "2.1.0",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.privatebin",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

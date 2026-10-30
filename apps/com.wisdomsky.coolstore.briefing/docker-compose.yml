@@ -1,0 +1,22 @@
+name: briefing
+services:
+  app:
+    image: holtwick/briefing:3.1.10
+    restart: unless-stopped
+    ports:
+      - target: 8080
+        published: "8080"
+        protocol: tcp
+    volumes:
+      - type: bind
+        source: /DATA/AppData/briefing/data
+        target: /app/data
+x-casaos:
+  id: com.wisdomsky.coolstore.briefing
+  main: app
+  index: /
+  port_map: "8080"
+  scheme: http
+  icon: https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages/apps/com.wisdomsky.coolstore.briefing/assets/icon.png
+  title: Briefing
+  version: 3.1.10

@@ -1,0 +1,30 @@
+name: paperless-ai
+services:
+  app:
+    image: clusterzx/paperless-ai:3.0.9
+    restart: unless-stopped
+    ports:
+      - target: 3000
+        published: "3000"
+        protocol: tcp
+    environment:
+      PUID: $PUID
+      PGID: $PGID
+      PAPERLESS_AI_PORT: "3000"
+      TZ: $TZ
+      PAPERLESS_API_URL: http://paperless-ngx:8000/api
+      PAPERLESS_API_TOKEN: ""
+      RAG_SERVICE_ENABLED: "false"
+    volumes:
+      - type: bind
+        source: /DATA/AppData/paperless-ai/data
+        target: /app/data
+x-casaos:
+  id: com.wisdomsky.coolstore.paperless-ai
+  main: app
+  index: /
+  port_map: "3000"
+  scheme: http
+  icon: https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages/apps/com.wisdomsky.coolstore.paperless-ai/assets/icon.png
+  title: Paperless-AI
+  version: 3.0.9

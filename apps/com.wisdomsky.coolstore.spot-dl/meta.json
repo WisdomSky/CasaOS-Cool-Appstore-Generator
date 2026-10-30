@@ -1,0 +1,23 @@
+{
+  "tagline": "spotDL finds songs from Spotify playlists on YouTube and downloads them - along with album art, lyrics and metadata.",
+  "description": "spotDL finds songs from Spotify playlists on YouTube and downloads them - along with album art, lyrics and metadata.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.spot-dl/assets/thumbnail.svg",
+  "tips": {
+    "before_install": "The default download location is set to `/DATA/Media/Music`. You can change this by going into the app settings and changing the specified path.\n"
+  },
+  "author": "WisdomSky",
+  "developer": "spotDL",
+  "category": "Media",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "4.6.0",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.spot-dl",
+  "categories": [
+    "media"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

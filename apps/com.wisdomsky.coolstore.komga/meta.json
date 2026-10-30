@@ -1,0 +1,21 @@
+{
+  "tagline": "Koomga Manga, Comic And E-book Server",
+  "description": "Koomga Manga, Comic and E-Book Server",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.komga/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "Gotson",
+  "category": "Media",
+  "architectures": [
+    "amd64",
+    "arm",
+    "arm64"
+  ],
+  "version": "1.29.2",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.komga",
+  "categories": [
+    "media"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}

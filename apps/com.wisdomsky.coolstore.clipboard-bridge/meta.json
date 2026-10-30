@@ -1,0 +1,26 @@
+{
+  "tagline": "Copy on one device, use it on another.",
+  "description": "Self-hosted clipboard and file bridge for Windows, Android, iPhone, iPad, and the browser. Stores shared text, photos, and files with searchable history and optional accounts.",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.clipboard-bridge/assets/thumbnail.svg",
+  "screenshot_link": [
+    "/apps/com.wisdomsky.coolstore.clipboard-bridge/assets/screenshot-1.png",
+    "/apps/com.wisdomsky.coolstore.clipboard-bridge/assets/screenshot-2.png"
+  ],
+  "tips": {
+    "before_install": "Use only on a trusted LAN or private VPN. Protection with `CLIPBOARD_PASSWORD` and `CLIPBOARD_TOKEN` is optional. Keep `/data` persistent and back it up before updates."
+  },
+  "author": "WisdomSky",
+  "developer": "Mattboxx",
+  "category": "Productivity",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "1.0.11",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.clipboard-bridge",
+  "categories": [
+    "productivity"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages"
+}

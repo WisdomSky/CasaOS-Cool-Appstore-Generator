@@ -1,0 +1,20 @@
+{
+  "tagline": "Free And Open-source Blogging Platform",
+  "description": "Free and open-source blogging platform",
+  "thumbnail": "/apps/com.wisdomsky.coolstore.ghost/assets/thumbnail.png",
+  "author": "WisdomSky",
+  "developer": "Ghost Foundation",
+  "category": "Social",
+  "architectures": [
+    "amd64",
+    "arm64"
+  ],
+  "version": "6.73.0",
+  "update_at": "2026-10-30",
+  "id": "com.wisdomsky.coolstore.ghost",
+  "categories": [
+    "social"
+  ],
+  "base_url": "https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Cool-Appstore-Generator@gh-pages",
+  "screenshot_link": []
+}
