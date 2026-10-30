@@ -14,7 +14,7 @@ const args = process.argv.slice(2);
 const validateOnly = args.includes('--validate-only') || args.includes('--validate');
 const skipTagUpdate = validateOnly || args.includes('--skip-tag-update');
 const outputDir = getArgument('--output') || 'dist';
-const baseUrl = getArgument('--base-url') ?? process.env.BASE_URL ?? '';
+const baseUrl = getArgument('--base-url') ?? process.env.BASE_URL ?? 'https://cdn.jsdelivr.net/gh/WisdomSky/CasaOS-Coolstore@gh-pages';
 
 Log.setLogLevel(LogLevel.Info);
 
@@ -49,5 +49,5 @@ if (validateOnly) {
 await store.build(outputDir, baseUrl);
 
 const storeUrl = Utils.urlJoin(baseUrl, 'store.json');
-Log.info(`AppStore v2 generated in ${outputDir}`);
-Log.info(`Store URL: ${storeUrl}`);
+Log.info(`AppStore v2 source generated in ${outputDir}`);
+Log.info(`Published store URL: ${storeUrl}`);

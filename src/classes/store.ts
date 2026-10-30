@@ -1,7 +1,5 @@
 import path from 'path';
 import fs from 'fs';
-import crypto from 'crypto';
-import fetch from 'node-fetch';
 import yaml from 'js-yaml';
 import App from './app';
 import Appdater from './appdater';
@@ -27,41 +25,6 @@ const LOCALE_PATTERN = /^[a-z]{2}_[A-Z]{2}$/;
 const SAFE_ID_PATTERN = /^(?=.*[a-z0-9])[a-z0-9._-]+$/;
 const REVERSE_DOMAIN_PATTERN = /^(?=.{3,}$)(?=.*[a-z0-9])[a-z0-9_-]+(?:\.[a-z0-9_-]+)+$/;
 const COMPOSE_NAME_PATTERN = /^[a-z0-9_-]+$/;
-const SEMVER_PATTERN = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
-
-const RUNTIME_FIELDS = ['id', 'main', 'index', 'port_map', 'scheme', 'icon', 'title', 'version'];
-const META_FIELDS = [
-    'tagline',
-    'description',
-    'thumbnail',
-    'screenshot_link',
-    'tips',
-    'author',
-    'developer',
-    'category',
-    'architectures',
-    'version',
-    'update_at',
-    'release_notes',
-    'website',
-    'repo',
-    'support',
-    'docs',
-];
-const I18N_FIELDS = ['title', 'tagline', 'description', 'release_notes'];
-
-const IMAGE_EXTENSIONS = new Set(['.svg', '.png', '.jpg', '.jpeg', '.webp', '.gif']);
-const ASSET_CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
-const CONTENT_TYPE_EXTENSIONS: { [contentType: string]: string } = {
-    'image/svg+xml': '.svg',
-    'image/png': '.png',
-    'image/jpeg': '.jpg',
-    'image/jpg': '.jpg',
-    'image/webp': '.webp',
-    'image/gif': '.gif',
-    'image/vnd.microsoft.icon': '.ico',
-    'image/x-icon': '.ico',
-};
 
 type StoreConfig = {
     version?: number;
@@ -73,32 +36,13 @@ type StoreConfig = {
     icon?: string;
 };
 
-type AssetSource = {
-    buffer: Buffer;
-    extension: string;
-};
-
-type AssetResult = {
-    icon: string;
-    thumbnail?: string;
-    screenshots: string[];
-};
-
-type IndexEntry = {
+type SourceEntry = {
     id: string;
+    folder: string;
     title: string;
     tagline: string;
-    category: string;
-    categories: string[];
-    author: string;
-    developer: string;
-    architectures: string[];
     icon: string;
-    thumbnail: string;
-    compose_url: string;
-    meta_url: string;
-    content_hash: string;
-    version?: string;
+    version: string;
 };
 
 export type StoreBuilderOptions = {
@@ -364,6 +308,10 @@ export default class StoreBuilder {
         }
     }
 
+    /**
+     * Write a v2 source tree. The appstore repository's GitHub workflow runs the
+     * official build action and publishes the generated protocol files.
+     */
     async build(outputDir: string, baseUrl: string = ''): Promise<void> {
         const {errors} = this.validate();
         if (errors.length > 0) {
@@ -384,175 +332,150 @@ export default class StoreBuilder {
             }
         }
 
-        const normalizedBaseUrl = Utils.normalizeBaseUrl(baseUrl);
-        Utils.removeDir(resolvedOutput);
         Utils.createDir(resolvedOutput);
 
-        // Copy shared assets (banner, default icon, category list, ...).
+        // Remove artifacts produced by the old built-output layout, but never
+        // remove the dist directory itself.
+        this.removeLegacyBuildOutput(resolvedOutput);
+
+        // Copy shared files, including the appstore repo workflow.
         if (fs.existsSync('src/assets')) {
-            Utils.copyDir('src/assets', outputDir, ['README.md']);
+            Utils.copyDir('src/assets', resolvedOutput, ['README.md']);
         }
 
-        this.writeStoreFiles(outputDir);
+        this.copyFileIfExists(this.storeConfigPath, path.join(resolvedOutput, 'store-config.json'));
+        this.copyFileIfExists(this.supportedLanguagesPath, path.join(resolvedOutput, 'supported-languages.json'));
 
-        const indexEntries: IndexEntry[] = [];
-        const appLocales: { [appId: string]: Set<string> } = {};
-        const appVersions: { [appId: string]: string } = {};
+        const appsOutput = path.join(resolvedOutput, 'Apps');
+        Utils.createDir(appsOutput);
+
+        const expectedFolders = new Set<string>();
+        const entries: SourceEntry[] = [];
+        const updateAt = new Date().toISOString().slice(0, 10);
 
         for (const app of this.apps) {
-            const id = String(app.xCasaOS().id || '').trim().toLowerCase();
-            const appOutput = path.join(outputDir, 'apps', id);
-            const assetsOutput = path.join(appOutput, 'assets');
-
-            Utils.createDir(appOutput, assetsOutput);
-
-            const assets = await this.processAssets(app, assetsOutput);
-            const assetsPath = `/apps/${id}/assets`;
+            const folder = app.folderName();
+            const appOutput = path.join(appsOutput, folder);
             const version = this.versionFor(app);
 
-            const compose = this.buildCompose(app, assets, assetsPath, version, normalizedBaseUrl);
+            expectedFolders.add(folder);
+            Utils.createDir(appOutput);
+
+            const compose = clone(app.compose());
+            const x = compose['x-casaos'] || {};
+            x.version = version;
+            x.update_at = updateAt;
+            compose['x-casaos'] = x;
+
             fs.writeFileSync(path.join(appOutput, 'docker-compose.yml'), dumpYaml(compose));
+            this.copyAppSourceFiles(app, appOutput);
 
-            const meta = this.buildMeta(app, assets, assetsPath, version, normalizedBaseUrl);
-            Utils.writeJson(path.join(appOutput, 'meta.json'), meta);
+            const icon = String(x.icon || '').trim();
+            entries.push({
+                id: String(x.id || '').trim().toLowerCase(),
+                folder,
+                title: resolveLocale(x.title),
+                tagline: resolveLocale(x.tagline),
+                icon: /^https?:\/\//i.test(icon) ? icon : `Apps/${folder}/${icon}`,
+                version,
+            });
 
-            const locales = this.appLocales(app);
-            appLocales[id] = locales;
-            for (const locale of locales) {
-                if (locale === DEFAULT_LOCALE || !this.supportedLanguages.includes(locale)) continue;
-
-                const overlay = this.buildMetaOverlay(app, locale);
-                Utils.writeJson(path.join(appOutput, `meta.${locale}.json`), overlay);
-            }
-
-            const iconPath = `${assetsPath}/${assets.icon}`;
-            const contentHash = Utils.hashDirectory(appOutput);
-            const indexEntry: IndexEntry = {
-                id,
-                title: resolveLocale(app.xCasaOS().title),
-                tagline: resolveLocale(app.xCasaOS().tagline),
-                category: String(app.xCasaOS().category || ''),
-                categories: normalizeCategories(app.xCasaOS().category),
-                author: String(app.xCasaOS().author || ''),
-                developer: String(app.xCasaOS().developer || ''),
-                architectures: (app.xCasaOS().architectures || []).map(value => String(value)),
-                icon: iconPath,
-                thumbnail: meta.thumbnail || '',
-                compose_url: `/apps/${id}/docker-compose.yml`,
-                meta_url: `/apps/${id}/meta.json`,
-                content_hash: contentHash,
-            };
-
-            if (SEMVER_PATTERN.test(version)) {
-                indexEntry.version = version;
-            } else {
-                this.warnings.push(`${id}: x-casaos.version "${version}" is not semver; it will be omitted from index.json.`);
-            }
-
-            indexEntries.push(indexEntry);
-            appVersions[id] = version;
-            Log.info(`  OK   ${id}`);
+            Log.info(`  OK   ${folder}`);
         }
 
-        indexEntries.sort((a, b) => a.title.localeCompare(b.title));
-
-        this.writeIndexFiles(outputDir, normalizedBaseUrl, indexEntries, appLocales);
-        this.writeReadme(outputDir, normalizedBaseUrl, indexEntries, appVersions);
+        this.cleanStaleAppDirs(appsOutput, expectedFolders);
+        this.writeReadme(resolvedOutput, baseUrl, entries);
 
         for (const warning of this.warnings) {
             Log.error(`WARN  ${warning}`);
         }
     }
 
-    private writeStoreFiles(outputDir: string): void {
-        const config = this.storeConfig;
-        const storeId = String(config.store_id || '').trim().toLowerCase();
+    private removeLegacyBuildOutput(outputDir: string): void {
+        const legacyRootFiles = ['store.json', 'index.json', 'metadata.tar.gz', 'metadata.sha256'];
 
-        const store = {
-            version: 2,
-            store_id: storeId,
-            name: resolveLocale(config.name),
-            description: resolveLocale(config.description),
-            maintainer: String(config.maintainer || ''),
-            url: String(config.url || ''),
-            ...(config.icon ? {icon: config.icon} : {}),
-        };
+        for (const entry of fs.readdirSync(outputDir, {withFileTypes: true})) {
+            if (!entry.isFile()) continue;
 
-        Utils.writeJson(path.join(outputDir, 'store.json'), store);
-
-        const storeLocales = new Set<string>([
-            ...collectLocales(config.name),
-            ...collectLocales(config.description),
-        ]);
-
-        for (const locale of storeLocales) {
-            if (locale === DEFAULT_LOCALE || !this.supportedLanguages.includes(locale)) continue;
-
-            Utils.writeJson(path.join(outputDir, `store.${locale}.json`), {
-                store_id: storeId,
-                ...(config.name?.[locale] ? {name: config.name[locale]} : {}),
-                ...(config.description?.[locale] ? {description: config.description[locale]} : {}),
-            });
-        }
-    }
-
-    private writeIndexFiles(
-        outputDir: string,
-        baseUrl: string,
-        entries: IndexEntry[],
-        appLocales: { [appId: string]: Set<string> },
-    ): void {
-        const index = {
-            version: 2,
-            updated_at: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
-            app_count: entries.length,
-            base_url: baseUrl,
-            apps: entries,
-        };
-
-        Utils.writeJson(path.join(outputDir, 'index.json'), index);
-
-        const localeEntries: { [locale: string]: any[] } = {};
-        for (const entry of entries) {
-            const app = this.apps.find(candidate => candidate.id().toLowerCase() === entry.id);
-            if (!app) continue;
-
-            for (const locale of appLocales[entry.id] || new Set<string>()) {
-                if (locale === DEFAULT_LOCALE || !this.supportedLanguages.includes(locale)) continue;
-
-                const overlay: any = {id: entry.id};
-                if (app.xCasaOS().title?.[locale]) overlay.title = app.xCasaOS().title[locale];
-                if (app.xCasaOS().tagline?.[locale]) overlay.tagline = app.xCasaOS().tagline[locale];
-
-                if (Object.keys(overlay).length > 1) {
-                    localeEntries[locale] = localeEntries[locale] || [];
-                    localeEntries[locale].push(overlay);
-                }
+            const name = entry.name;
+            const isLegacyJson = /^(?:store|index)\.[A-Za-z]{2}_[A-Za-z]{2}\.json$/.test(name);
+            if (legacyRootFiles.includes(name) || isLegacyJson) {
+                fs.rmSync(path.join(outputDir, name), {force: true});
+                Log.info(`  REMOVED old build file ${name}`);
             }
         }
 
-        for (const [locale, apps] of Object.entries(localeEntries)) {
-            if (apps.length === 0) continue;
-            Utils.writeJson(path.join(outputDir, `index.${locale}.json`), {apps});
+        // The old built layout used lowercase `apps/` with reverse-domain app IDs.
+        // Remove only those app-ID directories so a case-insensitive filesystem
+        // does not delete the new `Apps/` source tree.
+        const oldAppsDir = path.join(outputDir, 'apps');
+        if (fs.existsSync(oldAppsDir)) {
+            for (const entry of fs.readdirSync(oldAppsDir, {withFileTypes: true})) {
+                if (entry.isDirectory() && entry.name.startsWith('com.wisdomsky.coolstore.')) {
+                    Utils.removeDir(path.join(oldAppsDir, entry.name));
+                    Log.info(`  REMOVED old built app ${entry.name}`);
+                }
+            }
+
+            try {
+                fs.rmdirSync(oldAppsDir);
+                Log.info('  REMOVED empty old apps directory');
+            } catch (e) {
+                // Not empty (or the same directory as Apps/ on a case-insensitive
+                // filesystem), so leave it in place.
+            }
+        }
+
+        const legacyStoreDir = path.join(outputDir, 'store');
+        if (fs.existsSync(legacyStoreDir)) {
+            Utils.removeDir(legacyStoreDir);
+            Log.info('  REMOVED old store metadata directory');
         }
     }
 
-    private writeReadme(
-        outputDir: string,
-        baseUrl: string,
-        entries: IndexEntry[],
-        versions: { [appId: string]: string },
-    ): void {
+    private cleanStaleAppDirs(appsOutput: string, expectedFolders: Set<string>): void {
+        for (const entry of fs.readdirSync(appsOutput, {withFileTypes: true})) {
+            if (!entry.isDirectory() || expectedFolders.has(entry.name)) continue;
+
+            Utils.removeDir(path.join(appsOutput, entry.name));
+            Log.info(`  REMOVED stale app ${entry.name}`);
+        }
+    }
+
+    private copyAppSourceFiles(app: App, destination: string): void {
+        const excluded = new Set(['docker-compose.yml', 'docker-compose.yaml', 'config.js']);
+
+        for (const entry of fs.readdirSync(app.getPath(), {withFileTypes: true})) {
+            if (excluded.has(entry.name)) continue;
+
+            const source = path.join(app.getPath(), entry.name);
+            const target = path.join(destination, entry.name);
+
+            if (entry.isDirectory()) {
+                Utils.copyDir(source, target);
+            } else if (entry.isFile()) {
+                fs.copyFileSync(source, target);
+            }
+        }
+    }
+
+    private copyFileIfExists(source: string, destination: string): void {
+        if (!fs.existsSync(source)) return;
+        Utils.createDir(path.dirname(destination));
+        fs.copyFileSync(source, destination);
+    }
+
+    private writeReadme(outputDir: string, baseUrl: string, entries: SourceEntry[]): void {
         const templatePath = 'src/assets/README.md';
         if (!fs.existsSync(templatePath)) return;
 
-        const rows = entries.map(entry => {
-            const icon = Utils.urlJoin(baseUrl, entry.icon);
-            const title = entry.title.replace(/\|/g, '\\|');
-            const tagline = String(entry.tagline || '').replace(/\|/g, '\\|').replace(/\s+/g, ' ').trim();
-            const version = versions[entry.id] || entry.version || '';
-            return `| <img src="${icon}" width="15"/>&nbsp;&nbsp;&nbsp;${title} | ${version} | ${tagline} |`;
-        });
+        const rows = entries
+            .sort((a, b) => a.title.localeCompare(b.title))
+            .map(entry => {
+                const title = entry.title.replace(/\|/g, '\\|');
+                const tagline = String(entry.tagline || '').replace(/\|/g, '\\|').replace(/\s+/g, ' ').trim();
+                return `| <img src="${entry.icon}" width="15"/>&nbsp;&nbsp;&nbsp;[${title}](Apps/${entry.folder}) | ${entry.version} | ${tagline} |`;
+            });
 
         let readme = fs.readFileSync(templatePath, 'utf8');
         readme = readme.replace(/%APPSLIST%/g, rows.join('\n'));
@@ -572,291 +495,10 @@ export default class StoreBuilder {
             .replace(/^alpine-v(?=\d)/, '')
             .replace(/^v(?=\d)/, '') || 'latest';
     }
-
-    private buildCompose(
-        app: App,
-        assets: AssetResult,
-        assetsPath: string,
-        version: string,
-        baseUrl: string,
-    ): App.Compose {
-        const source = clone(app.compose());
-        const sourceX = source['x-casaos'] || {};
-
-        for (const service of Object.values(source.services || {})) {
-            delete service['x-casaos'];
-            if (service.labels && typeof service.labels === 'object') {
-                delete service.labels.icon;
-                if (Object.keys(service.labels).length === 0) delete service.labels;
-            }
-        }
-
-        const runtime: any = {};
-        for (const field of RUNTIME_FIELDS) {
-            if (sourceX[field] === undefined) continue;
-
-            if (field === 'title') {
-                runtime.title = resolveLocale(sourceX.title);
-            } else if (field === 'icon') {
-                runtime.icon = Utils.urlJoin(baseUrl, `${assetsPath}/${assets.icon}`);
-            } else if (field === 'version') {
-                runtime.version = version;
-            } else {
-                runtime[field] = sourceX[field];
-            }
-        }
-
-        runtime.id = String(sourceX.id || '').toLowerCase();
-        runtime.port_map = String(sourceX.port_map || '');
-        runtime.version = version;
-
-        source['x-casaos'] = runtime;
-
-        return source;
-    }
-
-    private buildMeta(
-        app: App,
-        assets: AssetResult,
-        assetsPath: string,
-        version: string,
-        baseUrl: string,
-    ): any {
-        const source = app.xCasaOS();
-        const meta: any = {};
-
-        for (const field of META_FIELDS) {
-            if (source[field] === undefined) continue;
-
-            if (I18N_FIELDS.includes(field)) {
-                meta[field] = resolveLocale(source[field]);
-            } else if (field === 'tips') {
-                meta[field] = resolveTips(source.tips);
-            } else {
-                meta[field] = clone(source[field]);
-            }
-        }
-
-        if (meta.release_notes !== undefined) {
-            meta.release_note = meta.release_notes;
-            delete meta.release_notes;
-        }
-
-        meta.id = String(source.id || '').toLowerCase();
-        meta.version = version;
-        meta.categories = normalizeCategories(source.category);
-        meta.base_url = Utils.normalizeBaseUrl(baseUrl);
-        meta.thumbnail = assets.thumbnail ? `${assetsPath}/${assets.thumbnail}` : '';
-        meta.screenshot_link = assets.screenshots.map(file => `${assetsPath}/${file}`);
-
-        return meta;
-    }
-
-    private buildMetaOverlay(app: App, locale: string): any {
-        const source = app.xCasaOS();
-        const overlay: any = {id: String(source.id || '').toLowerCase()};
-
-        if (source.title?.[locale]) overlay.title = source.title[locale];
-        if (source.tagline?.[locale]) overlay.tagline = source.tagline[locale];
-        if (source.description?.[locale]) overlay.description = source.description[locale];
-        if (source.release_notes?.[locale]) overlay.release_note = source.release_notes[locale];
-
-        if (source.tips && typeof source.tips === 'object') {
-            const tips: any = {};
-            for (const [key, value] of Object.entries(source.tips)) {
-                if (isLocaleObject(value) && value[locale]) tips[key] = value[locale];
-            }
-            if (Object.keys(tips).length > 0) overlay.tips = tips;
-        }
-
-        return overlay;
-    }
-
-    private appLocales(app: App): Set<string> {
-        const x = app.xCasaOS();
-        const locales = new Set<string>();
-
-        for (const field of I18N_FIELDS) {
-            for (const locale of collectLocales(x[field])) locales.add(locale);
-        }
-
-        if (x.tips && typeof x.tips === 'object') {
-            for (const value of Object.values(x.tips)) {
-                for (const locale of collectLocales(value)) locales.add(locale);
-            }
-        }
-
-        return locales;
-    }
-
-    private async processAssets(app: App, assetsOutput: string): Promise<AssetResult> {
-        const x = app.xCasaOS();
-        const cache = new Map<string, AssetSource>();
-
-        let icon = await this.resolveAsset(app, String(x.icon || ''), cache, false);
-        if (icon === undefined) {
-            this.warnings.push(`${app.folderName()}: using the default icon because ${x.icon} could not be loaded.`);
-            icon = defaultIcon();
-        }
-        if (icon === undefined) {
-            throw new Error(`${app.folderName()}: unable to resolve required icon ${x.icon}`);
-        }
-
-        const thumbnail = x.thumbnail
-            ? await this.resolveAsset(app, String(x.thumbnail), cache, false)
-            : undefined;
-
-        const screenshots: string[] = [];
-        const screenshotRefs = Array.isArray(x.screenshot_link) ? x.screenshot_link : [];
-
-        for (let index = 0; index < screenshotRefs.length; index++) {
-            const source = await this.resolveAsset(app, String(screenshotRefs[index]), cache, false);
-            if (source === undefined) continue;
-
-            const filename = `screenshot-${index + 1}${source.extension}`;
-            fs.writeFileSync(path.join(assetsOutput, filename), source.buffer);
-            screenshots.push(filename);
-        }
-
-        const iconFilename = `icon${icon.extension}`;
-        fs.writeFileSync(path.join(assetsOutput, iconFilename), icon.buffer);
-
-        let thumbnailFilename: string | undefined;
-        if (thumbnail !== undefined) {
-            thumbnailFilename = `thumbnail${thumbnail.extension}`;
-            fs.writeFileSync(path.join(assetsOutput, thumbnailFilename), thumbnail.buffer);
-        }
-
-        return {
-            icon: iconFilename,
-            thumbnail: thumbnailFilename,
-            screenshots,
-        };
-    }
-
-    private async resolveAsset(
-        app: App,
-        reference: string,
-        cache: Map<string, AssetSource>,
-        required: boolean,
-    ): Promise<AssetSource | undefined> {
-        if (!reference.trim()) return undefined;
-
-        const cached = cache.get(reference);
-        if (cached !== undefined) return cached;
-
-        try {
-            let source: AssetSource;
-
-            if (/^https?:\/\//i.test(reference)) {
-                source = await this.downloadAsset(reference);
-            } else {
-                const localPath = path.resolve(app.getPath(), reference);
-                if (!fs.existsSync(localPath)) {
-                    throw new Error(`local asset not found: ${reference}`);
-                }
-
-                source = {
-                    buffer: fs.readFileSync(localPath),
-                    extension: normalizeExtension(path.extname(localPath)),
-                };
-            }
-
-            cache.set(reference, source);
-            return source;
-        } catch (e) {
-            if (required) throw e;
-            this.warnings.push(`${app.folderName()}: skipped asset ${reference}: ${e}`);
-            return undefined;
-        }
-    }
-
-    private async downloadAsset(reference: string): Promise<AssetSource> {
-        const cacheDir = path.resolve('.cache', 'assets');
-        const cacheKey = crypto.createHash('sha256').update(reference).digest('hex');
-        const cacheMetaPath = path.join(cacheDir, `${cacheKey}.json`);
-        const cacheBinPath = path.join(cacheDir, `${cacheKey}.bin`);
-
-        const cached = this.readAssetCache(cacheMetaPath, cacheBinPath);
-        if (cached !== undefined && Date.now() - cached.fetchedAt < ASSET_CACHE_MAX_AGE_MS) {
-            return {buffer: cached.buffer, extension: cached.extension};
-        }
-
-        try {
-            const response = await fetch(reference, {
-                headers: {'User-Agent': 'CasaOS-Coolstore-Generator/2.0'},
-                redirect: 'follow',
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status} while downloading ${reference}`);
-            }
-
-            const contentType = String(response.headers.get('content-type') || '').split(';')[0].trim().toLowerCase();
-            let extension = path.extname(new URL(reference).pathname).toLowerCase();
-
-            if (!IMAGE_EXTENSIONS.has(extension)) {
-                extension = CONTENT_TYPE_EXTENSIONS[contentType] || '';
-            }
-
-            if (!extension) {
-                throw new Error(`unable to determine image type for ${reference}`);
-            }
-
-            const buffer = Buffer.from(await response.arrayBuffer());
-            const source = {
-                buffer,
-                extension: normalizeExtension(extension),
-            };
-
-            Utils.createDir(cacheDir);
-            fs.writeFileSync(cacheBinPath, buffer);
-            Utils.writeJson(cacheMetaPath, {
-                extension: source.extension,
-                fetchedAt: Date.now(),
-                url: reference,
-            });
-
-            return source;
-        } catch (e) {
-            // A stale cached copy is better than dropping a referenced asset.
-            if (cached !== undefined) {
-                this.warnings.push(`Using cached copy of ${reference} after download failed: ${e}`);
-                return {buffer: cached.buffer, extension: cached.extension};
-            }
-
-            throw e;
-        }
-    }
-
-    private readAssetCache(metaPath: string, binPath: string): (AssetSource & {fetchedAt: number}) | undefined {
-        if (!fs.existsSync(metaPath) || !fs.existsSync(binPath)) return undefined;
-
-        try {
-            const meta = Utils.readJson<{extension: string; fetchedAt: number}>(metaPath);
-            return {
-                buffer: fs.readFileSync(binPath),
-                extension: normalizeExtension(meta.extension),
-                fetchedAt: Number(meta.fetchedAt) || 0,
-            };
-        } catch (e) {
-            return undefined;
-        }
-    }
 }
 
 function clone<T>(value: T): T {
     return JSON.parse(JSON.stringify(value));
-}
-
-function defaultIcon(): AssetSource | undefined {
-    const iconPath = path.resolve('src/assets/default-icon.svg');
-    if (!fs.existsSync(iconPath)) return undefined;
-
-    return {
-        buffer: fs.readFileSync(iconPath),
-        extension: '.svg',
-    };
 }
 
 function dumpYaml(value: any): string {
@@ -869,20 +511,8 @@ function dumpYaml(value: any): string {
     });
 }
 
-function normalizeExtension(extension: string): string {
-    const normalized = String(extension || '').toLowerCase();
-    if (normalized === '.jpeg') return '.jpg';
-    if (IMAGE_EXTENSIONS.has(normalized)) return normalized;
-    return normalized || '.png';
-}
-
 function isLocaleObject(value: any): value is App.LocalizedText {
     return value !== null && typeof value === 'object' && !Array.isArray(value);
-}
-
-function collectLocales(value: any): string[] {
-    if (!isLocaleObject(value)) return [];
-    return Object.keys(value).filter(key => LOCALE_PATTERN.test(key));
 }
 
 function resolveLocale(value: any, locale: string = DEFAULT_LOCALE): string {
@@ -895,28 +525,4 @@ function resolveLocale(value: any, locale: string = DEFAULT_LOCALE): string {
 
     const first = Object.values(value).find(item => typeof item === 'string');
     return typeof first === 'string' ? first : '';
-}
-
-function resolveTips(tips: any): any {
-    if (!isLocaleObject(tips)) return {};
-
-    const resolved: any = {};
-    for (const [key, value] of Object.entries(tips)) {
-        resolved[key] = resolveLocale(value);
-    }
-    return resolved;
-}
-
-function normalizeCategories(category: any): string[] {
-    const values = Array.isArray(category) ? category : [category];
-    const categories: string[] = [];
-
-    for (const value of values) {
-        const normalized = String(value || '').trim().toLowerCase();
-        if (normalized.length > 0 && !categories.includes(normalized)) {
-            categories.push(normalized);
-        }
-    }
-
-    return categories;
 }
